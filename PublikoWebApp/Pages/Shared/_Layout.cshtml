@@ -22,94 +22,58 @@
 
 </head>
 <body id="page-top">
+
     <!-- Navigation-->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+    @*<nav class="navbar navbar-dark navbar-expand-lg fixed-top" style="background-color:rgba(0, 0, 0, 0.5);width:100vw">
         <div class="container px-5">
             <a class="navbar-brand" href="#page-top">Welcome to Publiko</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#!">Sign Up</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#!">Log In</a></li>
+                    <partial name="_LoginPartial" />
                 </ul>
             </div>
         </div>
-    </nav>
-    <!-- Header-->
-    <header class="masthead text-center text-white">
-        <div class="masthead-content">
-            <div class="container px-5">
-                <h1 class="masthead-heading mb-0">One Page Wonder</h1>
-                <h2 class="masthead-subheading mb-0">Will Rock Your Socks Off</h2>
-                <a class="btn btn-primary btn-xl rounded-pill mt-5" href="#scroll">Learn More</a>
+    </nav>*@
+
+    <nav class="navbar fixed-top" style="width:100vw;background-color:rgba(0,0,0,0.5)">
+        <div class="container">
+            <div class="d-flex flex-wrap justify-content-between align-content-center" style="width:100%">
+                <div><a class="text-white">Welcome to Publiko</a></div>
+
+                @*<div>
+                    <div><a class="text-white">Register</a><a class="text-white">Login</a></div>
+                </div>*@
+
+                <div class="text-white">
+                    <ul class="navbar list-unstyled">
+                        <partial name="_LoginPartial" />
+                        <li class="nav-item">Hola</li>
+                        <li class="nav-item"><a class="text-white">Que tal</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="bg-circle-1 bg-circle"></div>
-        <div class="bg-circle-2 bg-circle"></div>
-        <div class="bg-circle-3 bg-circle"></div>
-        <div class="bg-circle-4 bg-circle"></div>
-    </header>
+    </nav>
 
-    <div> <!--class="container"-->-->
-        @*<main role="main" class="pb-3">
-                </main>*@
-            @RenderBody()
-        </div>
+    <!-- Body-->
+    @RenderBody()
 
-            <!-- Footer-->
-        <footer class="py-5 bg-black">
-            <div class="container px-5"><p class="m-0 text-center text-white small">Copyright &copy; Your Website 2021</p></div>
-        </footer>
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
+
+    <!-- Footer-->
+    <footer class="p-2 navbar-dark fixed-bottom" style="background-color:rgba(0, 0, 0, 0.80);width:100vw">
+            <p class="m-0 text-center text-white small">Copyright &copy; Publiko 2021</p>
+    </footer>
+
+    <!-- Bootstrap core JS-->
+    @*<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"></script>*@
+    <!-- Core theme JS-->
+    @*<script src="js/scripts.js"></script>*@
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-
-
-
-<!--<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">--><!--mb-3-->
-<!--<div class="container">
-    <a class="navbar-brand" asp-area="" asp-page="/Index">PublikoWebApp</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-            aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-        <ul class="navbar-nav flex-grow-1">
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-            </li>
-        </ul>
-        <partial name="_LoginPartial" />
-    </div>
-</div>
-        </nav>
-    </header>-->
-
-<!--<div>
-    <!--class="container"-->-->
-    <!--@*<main role="main" class="pb-3">
-        </main>*@
-    @@RenderBody()
-</div>-->
-
-@*<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2021 - PublikoWebApp - <a asp-area="" asp-page="/Privacy">Privacy</a>
-    </div>
-</footer>
-
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-
-@await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>*@
