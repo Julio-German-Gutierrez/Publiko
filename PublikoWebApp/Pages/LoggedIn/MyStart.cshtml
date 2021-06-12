@@ -11,18 +11,15 @@
     <div class="border-end bg-white" id="sidebar-wrapper">
         <div class="sidebar-heading border-bottom bg-light">Publiko Menu</div>
         <div class="list-group list-group-flush">
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">MySite</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Edit</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Overchange</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Events</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Profile</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!">Status</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!" onclick="MenuSelect('myPagesID')">My Pages</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!" onclick="MenuSelect('editID')">Edit</a>
+            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!" onclick="MenuSelect('statisticsID')">Statistics</a>
         </div>
     </div>
     <!-- Page content wrapper-->
     <div id="page-content-wrapper">
         <!-- Page content-->
-        <div class="container-fluid">
+        <div hidden class="container-fluid">
             <h1 class="mt-4">Simple Sidebar</h1>
             <p>The starting state of the menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will change.</p>
             <p>
@@ -33,8 +30,55 @@
                 ID which will toggle the menu when clicked.
             </p>
         </div>
+
+        <!--Welcome-->
+        <div id="welcomeID" class="container">
+            <h1>Welcome to your site!</h1>
+        </div>
+
+        <!--My Pages-->
+        <div id="myPagesID" class="container" hidden>
+            <h1>MyPages</h1>
+        </div>
+
+        <!--Edit-->
+        <div id="editID" class="container" hidden>
+            <h1>Edit</h1>
+        </div>
+
+        <!--Statistics-->
+        <div id="statisticsID" class="container" hidden>
+            <h1>Statistics</h1>
+        </div>
+
     </div>
 </div>
 
 <!-- Core theme JS-->
 <script src="js/scripts_simple_side_bar.js"></script>
+
+<script type="text/javascript">
+    let welcome = document.getElementById('welcomeID');
+    let IDTags = ['welcomeID', 'myPagesID', 'editID', 'statisticsID'];
+
+
+    function MenuSelect(id) {
+        let selection = document.getElementById(id);
+
+        if (welcome.hidden == false) {
+            welcome.hidden = true;
+        }
+
+        for (let i = 0; i < IDTags.length; i++) {
+            let IDtag = document.getElementById(IDTags[i])
+            if (IDtag.id != selection.id) {
+                IDtag.hidden = true;
+            }
+            else {
+                IDtag.hidden = false;
+            }
+        }
+        
+        selection.hidden = false;
+    }
+</script>
