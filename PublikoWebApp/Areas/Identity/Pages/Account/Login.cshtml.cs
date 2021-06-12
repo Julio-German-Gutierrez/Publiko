@@ -88,7 +88,7 @@ namespace PublikoWebApp.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    return LocalRedirect("~/LoggedIn/MyStart");
                 }
                 if (result.RequiresTwoFactor)
                 {
