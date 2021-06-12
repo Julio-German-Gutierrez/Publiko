@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@inject SignInManager<IdentityUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -20,6 +22,8 @@
     <!-- Core theme CSS (includes Bootstrap)-->
     <link href="css/styles.css" rel="stylesheet" />
     <link href="css/gerstyles.css" rel="stylesheet" />
+    <!-- Core theme CSS Simple side bar (includes Bootstrap)-->
+    <link href="css/styles_simple_side_bar.css" rel="stylesheet" />
 
 </head>
 <body id="page-top">
@@ -27,7 +31,14 @@
     <!-- Navigation-->
     <nav class="navbar navbar-expand-sm navbar-dark fixed-top" style="background-color:rgba(0, 0, 0, 0.50)">
         <div class="container">
-            <a class="navbar-brand text-white">Welcome to Publiko</a>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <a asp-page="/LoggedIn/MyStart" class="navbar-brand text-white">My Publiko</a>
+            }
+            else
+            {
+                <a class="navbar-brand text-white">Welcome to Publiko</a>
+            }
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
 
@@ -45,7 +56,7 @@
 
     <!-- Footer-->
     <footer class="navbar p-2 navbar-dark fixed-bottom justify-content-center" style="background-color:rgba(0, 0, 0, 0.50)">
-            <p class="m-0 text-center text-white small">Copyright &copy; Publiko 2021</p>
+        <p class="m-0 text-center text-white small">Copyright &copy; Publiko 2021</p>
     </footer>
 
     <!-- Bootstrap core JS-->
