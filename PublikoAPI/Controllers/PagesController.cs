@@ -37,7 +37,7 @@ namespace PublikoAPI.Controllers
 
             if (pageName == "Linnea")
             {
-                return $"<h1>Qué perra por favor!</h1>";
+                return $"<h2>Qué perra por favor!</h2>";
             }
             else if (pageName == "Anneli")
             {
