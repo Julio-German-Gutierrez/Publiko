@@ -1,0 +1,26 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    var user = _userManager.GetUserAsync(User);
+}
+@inject UserManager<IdentityUser> _userManager
+@inject Services.IStoredPagesService _pages
+
+
+<div class="container">
+    <h1>My Pages</h1>
+    <hr />
+    @Html.Raw(_pages.GetPage("Linnea", user.Result.UserName).Result)
+    <p hidden>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sed velit dictum, tincidunt mi nec,
+        vestibulum eros. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
+        Ut lobortis quis ex at dapibus. Proin cursus rhoncus sem id malesuada. Integer non lorem sed ex commodo dignissim.
+        Fusce tellus orci, tristique quis consectetur eu, iaculis vel sapien. Donec bibendum tellus in malesuada placerat.
+        Maecenas sodales, nulla eget euismod eleifend, odio augue gravida purus, eu convallis massa elit non ex.
+        Vivamus sagittis et quam et mattis. Phasellus ac ultrices eros, sit amet elementum felis. Mauris eleifend,
+        felis finibus mattis fermentum, lorem nunc tempus erat, sit amet efficitur risus augue eu turpis.
+        Maecenas a tempus nulla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+        Vivamus mollis sem in sem ultrices rutrum. Ut suscipit arcu non turpis posuere, id tempus odio dapibus.
+    </p>
+</div>

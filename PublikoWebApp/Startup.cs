@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PublikoWebApp.Data;
+using PublikoWebApp.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,8 @@ namespace PublikoWebApp
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<PublikoIdentityDbContext>();
+
+            services.AddHttpClient();
 
             //START Added by me.
             services.Configure<IdentityOptions>(options =>
@@ -67,6 +70,9 @@ namespace PublikoWebApp
                 options.SlidingExpiration = true;
             });
             //END Added by me.
+
+            //Own Services
+            services.AddSingleton<IStoredPagesService, StoredPagesService>();
 
             services.AddRazorPages();
             services.AddRazorPages().AddRazorRuntimeCompilation();

@@ -37,8 +37,8 @@
         </div>
 
         <!--My Pages-->
-        <div id="myPagesID" class="container" hidden>
-            <h1>MyPages</h1>
+        <div id="myPagesID" hidden>
+            <partial name="_MyPages" />
         </div>
 
         <!--Edit-->
@@ -58,27 +58,17 @@
 <script src="js/scripts_simple_side_bar.js"></script>
 
 <script type="text/javascript">
-    let welcome = document.getElementById('welcomeID');
-    let IDTags = ['welcomeID', 'myPagesID', 'editID', 'statisticsID'];
-
+    let IDs = ['welcomeID', 'myPagesID', 'editID', 'statisticsID'];
 
     function MenuSelect(id) {
-        let selection = document.getElementById(id);
-
-        if (welcome.hidden == false) {
-            welcome.hidden = true;
-        }
-
-        for (let i = 0; i < IDTags.length; i++) {
-            let IDtag = document.getElementById(IDTags[i])
-            if (IDtag.id != selection.id) {
+        for (let i = 0; i < IDs.length; i++) {
+            let IDtag = document.getElementById(IDs[i])
+            if (IDtag.id != id) {
                 IDtag.hidden = true;
             }
             else {
                 IDtag.hidden = false;
             }
         }
-        
-        selection.hidden = false;
     }
 </script>
