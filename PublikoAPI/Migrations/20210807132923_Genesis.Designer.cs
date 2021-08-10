@@ -9,7 +9,7 @@ using PublikoAPI.Data;
 namespace PublikoAPI.Migrations
 {
     [DbContext(typeof(PublikoPagesDBContext))]
-    [Migration("20210614153640_Genesis")]
+    [Migration("20210807132923_Genesis")]
     partial class Genesis
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,22 +20,46 @@ namespace PublikoAPI.Migrations
                 .HasAnnotation("ProductVersion", "5.0.7")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("PublikoAPI.Models.Page", b =>
+            modelBuilder.Entity("PublikoSharedLibrary.Models.Page", b =>
                 {
                     b.Property<string>("PageID")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("PageContent")
+                    b.Property<string>("PageBody")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PageTitle")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PageName")
+                    b.Property<string>("UserID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("PageID");
 
                     b.ToTable("Pages");
+                });
+
+            modelBuilder.Entity("PublikoSharedLibrary.Models.Post", b =>
+                {
+                    b.Property<string>("PostID")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PostContent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PostID");
+
+                    b.ToTable("Posts");
                 });
 #pragma warning restore 612, 618
         }

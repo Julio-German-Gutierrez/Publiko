@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using PublikoAPI.Data;
+using PublikoAPI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,8 @@ namespace PublikoAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IGlobalIDServices, GlobalIDServices>();
+
             services.AddDbContext<PublikoPagesDBContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("APIConnection")));

@@ -1,64 +1,111 @@
 ﻿@page
 @model PublikoWebApp.Pages.LoggedIn.MyStartModel
+@using System.Diagnostics;
+@using System.Threading;
+
 @{
+    Trace.WriteLine("Start webmodel");
+
+    //while (Model.Pages == null)
+    //{
+    //    Thread.Sleep(100);
+    //}
 }
 
 
-<div style="height:80px"></div>
+<div hidden style="height:80px;background-color:brown"></div>
 
-<div class="container d-flex" id="wrapper">
-    <!-- Sidebar-->
-    <div class="border-end bg-white" id="sidebar-wrapper">
-        <div class="sidebar-heading border-bottom bg-light">Publiko Menu</div>
-        <div class="list-group list-group-flush">
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!" onclick="MenuSelect('myPagesID')">My Pages</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!" onclick="MenuSelect('editID')">Edit</a>
-            <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!" onclick="MenuSelect('statisticsID')">Statistics</a>
+<!--Banner image-->
+<div>
+    <img hidden src="#" alt="Banner-image" />
+    <div style="height:200px;background-color:cornflowerblue"></div>
+</div>
+
+<!--User menu bar-->
+<div class="bg-dark">
+    <nav class="container navbar">
+        <div class="float-left">
+            <a class="pr-3 text-white" href="#" >Welcome Page</a>
+            <a class="pr-3 text-white" href="#">[+]</a>
         </div>
+    </nav>
+</div>
+
+<div class="container">
+    <div>
+        <h4 class="pt-3">Welcome</h4>
+        <h1>@Model.Pages[0].PageTitle</h1>
+        <hr />
+        @foreach (string block in Model.Pages[0].PageBody.Split('\n'))
+        {
+            <p>@block</p>
+        }
+
+        <p align="right">
+            By: @User.Identity.Name
+        </p>
     </div>
-    <!-- Page content wrapper-->
-    <div id="page-content-wrapper">
-        <!-- Page content-->
-        <div hidden class="container-fluid">
-            <h1 class="mt-4">Simple Sidebar</h1>
-            <p>The starting state of the menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will change.</p>
-            <p>
-                Make sure to keep all page content within the
-                <code>#page-content-wrapper</code>
-                . The top navbar is optional, and just for demonstration. Just create an element with the
-                <code>#sidebarToggle</code>
-                ID which will toggle the menu when clicked.
-            </p>
-        </div>
+</div>
 
-        <!--Welcome-->
-        <div id="welcomeID" class="container">
-            <h1>Welcome to your site!</h1>
-        </div>
+@*<div>
+    @if (User.IsInRole("Super user") || User.IsInRole("Admin") || User.IsInRole("Owner"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.BulletinID" class="btn btn-primary font-weight-bold">Redigera</a>
+    }
+    <a asp-action="Index" class="btn btn-secondary font-weight-bold">Tillbaka till Listan</a>
+</div>*@
 
-        <!--My Pages-->
-        <div id="myPagesID" hidden>
-            <partial name="_MyPages" />
-        </div>
 
-        <!--Edit-->
-        <div id="editID" class="container" hidden>
-            <h1>Edit</h1>
-        </div>
 
-        <!--Statistics-->
-        <div id="statisticsID" class="container" hidden>
+
+<!--<div class="container d-flex" id="wrapper">-->
+<!-- Sidebar-->
+<!--<div class="border-end bg-white" id="sidebar-wrapper">
+    <div hidden class="sidebar-heading border-bottom bg-light">Menu</div>
+    <div class="list-group list-group-flush">
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!" onclick="MenuSelect('myPostsID')">My Posts</a>
+        <a hidden class="list-group-item list-group-item-action list-group-item-light p-3" href="#!" onclick="MenuSelect('editID')">Edit</a>
+        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!" onclick="MenuSelect('statisticsID')">Statistics</a>
+    </div>
+</div>-->
+<!-- Page content wrapper-->
+<!--<div id="page-content-wrapper">-->
+<!-- Page content-->
+<!--<div hidden class="container-fluid">
+    <h1 class="mt-4">Simple Sidebar</h1>
+    <p>The starting state of the menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will change.</p>
+    <p>
+        Make sure to keep all page content within the
+        <code>#page-content-wrapper</code>
+        . The top navbar is optional, and just for demonstration. Just create an element with the
+        <code>#sidebarToggle</code>
+        ID which will toggle the menu when clicked.
+    </p>
+</div>-->
+<!--Welcome-->
+<!--<div id="welcomeID" class="container">
+    <h1>Welcome to your site!</h1>
+</div>-->
+<!--My Pages-->
+<!--<div id="myPostsID" hidden>
+    <partial name="_MyPosts" />
+</div>-->
+<!--Edit-->
+<!--<div id="editID" class="container" hidden>
+    <h1>Edit</h1>
+</div>-->
+<!--Statistics-->
+<!--<div id="statisticsID" class="container" hidden>
             <h1>Statistics</h1>
         </div>
 
     </div>
-</div>
-
+</div>-->
 <!-- Core theme JS-->
-<script src="js/scripts_simple_side_bar.js"></script>
+<!--<script src="js/scripts_simple_side_bar.js"></script>
 
 <script type="text/javascript">
-    let IDs = ['welcomeID', 'myPagesID', 'editID', 'statisticsID'];
+    let IDs = ['welcomeID', 'myPostsID', 'editID', 'statisticsID'];
 
     function MenuSelect(id) {
         for (let i = 0; i < IDs.length; i++) {
@@ -71,4 +118,4 @@
             }
         }
     }
-</script>
+</script>-->

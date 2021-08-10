@@ -1,17 +1,29 @@
-﻿@*
+﻿@using System
+@using System.Collections.Generic
+@using System.Linq
+@using System.Net.Http
+@using System.Threading.Tasks
+
+@inject UserManager<IdentityUser> _userManager
+@inject Services.IStoredPagesService _pages
+@*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
     var user = _userManager.GetUserAsync(User);
+
+    //string message = await _pages.GetPageAsync("MyFirstPage", user.Result.Id)
+    //    .Result
+    //    .Content
+    //    .ReadAsStringAsync();
 }
-@inject UserManager<IdentityUser> _userManager
-@inject Services.IStoredPagesService _pages
 
 
-<div class="container">
+
+@*<div class="container">
     <h1>My Pages</h1>
     <hr />
-    @Html.Raw(_pages.GetPage("Anneli", user.Result.UserName).Result)
+    @Html.Raw(message)
     <p hidden>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi sed velit dictum, tincidunt mi nec,
         vestibulum eros. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
@@ -23,4 +35,4 @@
         Maecenas a tempus nulla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
         Vivamus mollis sem in sem ultrices rutrum. Ut suscipit arcu non turpis posuere, id tempus odio dapibus.
     </p>
-</div>
+</div>*@
