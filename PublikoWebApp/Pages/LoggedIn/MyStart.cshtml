@@ -25,8 +25,19 @@
 <div class="bg-dark">
     <nav class="container navbar">
         <div class="float-left">
-            <a class="pr-3 text-white" href="#" >Welcome Page</a>
-            <a class="pr-3 text-white" href="#">[+]</a>
+            @if (Model.Pages.Count == 0)
+            {
+                <a class="pr-3 text-white" href="#" id="0">Welcome Page</a>
+            }
+            else
+            {
+                for (int i = 0; i < Model.Pages.Count; i++)
+                {
+                    <a class="pr-3 text-white" href="#" id="0">@Model.Pages[i].PageTitle</a>
+                }
+
+            }
+            <a class="pr-3 text-white" asp-page="CreatePage">[+]</a>
         </div>
     </nav>
 </div>
@@ -34,12 +45,15 @@
 <div class="container">
     <div>
         <h4 class="pt-3">Welcome</h4>
-        <h1>@Model.Pages[0].PageTitle</h1>
+        <h1>Titulo</h1>
         <hr />
-        @foreach (string block in Model.Pages[0].PageBody.Split('\n'))
+        @*@foreach (string block in Model.Pages[0].PageBody.Split('\n'))
         {
             <p>@block</p>
-        }
+        }*@
+        <p>
+            Main Body
+        </p>
 
         <p align="right">
             By: @User.Identity.Name

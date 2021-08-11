@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PublikoWebApp.Data;
 using PublikoWebApp.Services;
+using PublikoSharedLibrary.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,6 +74,7 @@ namespace PublikoWebApp
 
             //Own Services
             services.AddSingleton<IStoredPagesService, StoredPagesService>();
+            services.AddSingleton<IGlobalIDServices, GlobalIDServices>();
 
             services.AddRazorPages();
             services.AddRazorPages().AddRazorRuntimeCompilation();

@@ -19,12 +19,8 @@ namespace PublikoWebApp.Services
         public HttpClient _httpClient { get; }
         
         string baseURL = @"https://localhost:5001";
-        //string resourceFetch = @"Fetch";
-        //string resourceCreate = @"Create";
-        //string aPageName= @"pageName=";
-        //string aPageHead= @"pageHead=";
-        //string aPageBody = @"pageBody=";
-        //string aUserID = @"userID=";
+
+
 
         public async Task<string> GetPagesByAuthorIDAsync(string userID) //HttpResponseMessage
         {
@@ -34,13 +30,15 @@ namespace PublikoWebApp.Services
             var request = new HttpRequestMessage(HttpMethod.Get, fullURL);
             var response = await _httpClient.SendAsync(request);
 
-            if (response != null)
+            if (response.IsSuccessStatusCode)
             {
                 return await response.Content.ReadAsStringAsync();
             }
             else throw new Exception("Problema");
             //else throw new Exception(response.ReasonPhrase);
         }
+
+
 
         public List<WebPage> GetAllPagesAsync()
         {
@@ -52,16 +50,26 @@ namespace PublikoWebApp.Services
             //throw new NotImplementedException();
         }
 
-        //public string CreatePageAsync(Page page)
-        //{
-        //    string pageJson = JsonSerializer.Serialize(page);
 
-        //    string fullURL = baseURL + resourceCreate + "?" + "page=" + pageJson;
 
-        //    var request = new HttpRequestMessage(HttpMethod.Post, fullURL);
-        //    var response = _httpClient.SendAsync();
+        public async Task<string> CreatePageAsync(WebPage webPage = null)
+        {
+            if (webPage != null)
+            {
+                string webPageJson = JsonSerializer.Serialize(webPage);
 
-        //    return "";
-        //}
+                string fullURL = baseURL + $"/api/pages/create/page/title/{webPage.PageTitle}/body/{webPage.PageBody}/user/{webPage.UserID}";
+
+                var request = new HttpRequestMessage(HttpMethod.Post, fullURL);
+                HttpResponseMessage response = await _httpClient.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return "error";
+                }
+            }
+
+            return "ok";
+        }
     }
 }

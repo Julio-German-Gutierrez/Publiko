@@ -1,0 +1,41 @@
+﻿@page
+@inject Microsoft.AspNetCore.Identity.UserManager<IdentityUser> _userManager
+
+@model PublikoWebApp.Pages.LoggedIn.CreatePageModel
+@{
+    //Model.NewPage.PageID = "Momentaneo";
+    //Model.NewPage.UserID = _userManager.GetUserId(User);
+}
+
+<div class="container">
+    <h2>Create new page</h2>
+    <hr />
+    <div>
+        <form asp-action="OnPostAsync" method="post">
+
+            <div hidden>
+                <input asp-for="NewPage.UserID" value="@_userManager.GetUserId(User)" class="form-control" />
+                <input asp-for="NewPage.PageID" value="momentaneo" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label class="control-label font-weight-bold">Page Title</label>
+                <input asp-for="NewPage.PageTitle" class="form-control" />
+                <span asp-validation-for="NewPage.PageTitle" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label font-weight-bold">Page Content</label>
+                <textarea class="form-control text-break" asp-for="NewPage.PageBody" rows="20"></textarea> <!-- Corregir NEWLINES -->
+                <div hidden>Antal bokstäver kvar: <span id="IFCounter"></span></div>
+                <span asp-validation-for="NewPage.PageBody" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary font-weight-bold" />
+                <a asp-page="MyStart" class="btn btn-danger font-weight-bold">Cancel</a>
+            </div>
+
+        </form>
+    </div>
+</div>

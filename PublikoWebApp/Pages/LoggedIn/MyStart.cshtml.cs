@@ -18,32 +18,23 @@ namespace PublikoWebApp.Pages.LoggedIn
     {
         public WebPage WebPage { get; set; }
         public List<WebPage> Pages { get; set; }
-        public MyStartModel(UserManager<IdentityUser> _userManager, IStoredPagesService storedPagesService)
+        public MyStartModel(UserManager<IdentityUser> userManager, IStoredPagesService storedPagesService)
         {
-            UserManager = _userManager;
+            _userManager = userManager;
             _pagesService = storedPagesService;
-
-            Trace.WriteLine("Start C# Model");
         }
 
-        public UserManager<IdentityUser> UserManager { get; }
+        public UserManager<IdentityUser> _userManager { get; }
         public IStoredPagesService _pagesService { get; }
+
+
 
         public async Task OnGetAsync()
         {
-            //await GetPageAsync();
+            Task<string> message = _pagesService
+                .GetPagesByAuthorIDAsync(_userManager.GetUserId(User));
 
-            Task<string> message = _pagesService.GetPagesByAuthorIDAsync("user01"); //UserManager.GetUserId(User)
-
-            Pages = JsonSerializer.Deserialize<List<WebPage>>(await message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-        }
-
-        private async Task GetPageAsync()
-        {
-            Task<string> message = _pagesService.GetPagesByAuthorIDAsync("user01"); //UserManager.GetUserId(User)
-
-            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-            Pages = System.Text.Json.JsonSerializer.Deserialize< List<WebPage> >(await message, options);
+            Pages = JsonSerializer.Deserialize< List<WebPage> >(await message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
     }
 }

@@ -5,14 +5,15 @@ namespace PublikoSharedLibrary.Models
 {
     public class WebPage
     {
+
         [Key]
+        [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string PageID { get; set; }
         [Required]
         public string PageTitle { get; set; }
-#nullable enable
-        public string? PageBody { get; set; }
-#nullable disable
+        [Required]
+        public string PageBody { get; set; }
         [Required]
         public string UserID { get; set; }
     }

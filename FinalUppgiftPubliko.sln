@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublikoWebApp", "PublikoWeb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublikoAPI", "PublikoAPI\PublikoAPI.csproj", "{658BDF01-0750-4BE5-AAF1-BFC2B2E6EFE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublikoSharedLibrary", "PublikoSharedLibrary\PublikoSharedLibrary.csproj", "{A9096A00-9C34-4D33-929C-945D0B4157C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublikoSharedLibrary", "PublikoSharedLibrary\PublikoSharedLibrary.csproj", "{A9096A00-9C34-4D33-929C-945D0B4157C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
