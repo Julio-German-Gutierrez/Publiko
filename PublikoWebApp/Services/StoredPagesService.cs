@@ -16,11 +16,10 @@ namespace PublikoWebApp.Services
             _httpClient = httpClient;
         }
 
-        public HttpClient _httpClient { get; }
-        
+        HttpClient _httpClient { get; }
+
         string baseURL = @"https://localhost:5001";
-
-
+        
 
         public async Task<string> GetPagesByAuthorIDAsync(string userID) //HttpResponseMessage
         {
@@ -52,13 +51,11 @@ namespace PublikoWebApp.Services
 
 
 
-        public async Task<string> CreatePageAsync(WebPage webPage = null)
+        public async Task<string> CreatePageAsync(string pageTitle, string pageBody, int? pageOrder, string userID)
         {
-            if (webPage != null)
+            if (pageTitle != null && pageBody != null && pageOrder != null && userID != null)
             {
-                string webPageJson = JsonSerializer.Serialize(webPage);
-
-                string fullURL = baseURL + $"/api/pages/create/page/title/{webPage.PageTitle}/body/{webPage.PageBody}/user/{webPage.UserID}";
+                string fullURL = baseURL + $"/api/pages/create/page/title/{pageTitle}/body/{pageBody}/order/{pageOrder}/user/{userID}";
 
                 var request = new HttpRequestMessage(HttpMethod.Post, fullURL);
                 HttpResponseMessage response = await _httpClient.SendAsync(request);
@@ -71,5 +68,6 @@ namespace PublikoWebApp.Services
 
             return "ok";
         }
+
     }
 }

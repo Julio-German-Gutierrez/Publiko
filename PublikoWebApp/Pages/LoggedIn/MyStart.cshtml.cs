@@ -18,6 +18,7 @@ namespace PublikoWebApp.Pages.LoggedIn
     {
         public WebPage WebPage { get; set; }
         public List<WebPage> Pages { get; set; }
+        public string pagesJSON;
         public MyStartModel(UserManager<IdentityUser> userManager, IStoredPagesService storedPagesService)
         {
             _userManager = userManager;
@@ -31,10 +32,11 @@ namespace PublikoWebApp.Pages.LoggedIn
 
         public async Task OnGetAsync()
         {
-            Task<string> message = _pagesService
+            string message = await _pagesService
                 .GetPagesByAuthorIDAsync(_userManager.GetUserId(User));
 
-            Pages = JsonSerializer.Deserialize< List<WebPage> >(await message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            Pages = JsonSerializer.Deserialize< List<WebPage> >(message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            pagesJSON = message;
         }
     }
 }

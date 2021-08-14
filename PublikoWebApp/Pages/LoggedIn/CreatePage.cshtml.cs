@@ -13,7 +13,12 @@ namespace PublikoWebApp.Pages.LoggedIn
     public class CreatePageModel : PageModel
     {
         [BindProperty]
-        public WebPage NewPage { get; set; }
+        public string PageTitle { get; set; }
+        [BindProperty]
+        public string PageBody { get; set; }
+        [BindProperty]
+        public int PageOrder { get; set; }
+
         public CreatePageModel(IStoredPagesService storedPagesService, UserManager<IdentityUser> userManager)
         {
             _storedPagesService = storedPagesService;
@@ -31,9 +36,12 @@ namespace PublikoWebApp.Pages.LoggedIn
         {
             if (ModelState.IsValid)
             {
-                Task<string> result = _storedPagesService.CreatePageAsync(NewPage);
+                string userID = _userManager.GetUserId(User);
+                string URLPageTitle = System.Web.HttpUtility.UrlEncodeUnicode(PageTitle);
+                string URLPageBody = System.Web.HttpUtility.UrlEncodeUnicode(PageBody);
 
-                if (await result == "ok")
+                string result = await _storedPagesService.CreatePageAsync(URLPageTitle, URLPageBody, PageOrder, userID);
+                if (result == "ok")
                 {
                     return RedirectToPage("MyStart");
                 }
@@ -42,7 +50,6 @@ namespace PublikoWebApp.Pages.LoggedIn
                     return Page();
                 }
             }
-
             return Page();
         }
     }

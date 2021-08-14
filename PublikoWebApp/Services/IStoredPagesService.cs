@@ -13,6 +13,6 @@ namespace PublikoWebApp.Services
         Task<string> GetPagesByAuthorIDAsync(string userID); //HttpResponseMessage
         List<WebPage> GetAllPagesAsync();
 
-        Task<string> CreatePageAsync(WebPage webPage);
+        Task<string> CreatePageAsync(string pageTitle, string pageBody, int? pageOrder, string userID);
     }
 }

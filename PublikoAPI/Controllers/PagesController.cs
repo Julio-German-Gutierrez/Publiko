@@ -86,15 +86,22 @@ namespace PublikoAPI.Controllers
         }
 
 
-        [HttpPost("Create/page/title/{pageTitle}/body/{pageBody}/user/{userID}")]
+        [HttpPost("Create/page/title/{URLPageTitle}/body/{URLPageBody}/order/{pageOrder}/user/{userID}")]
         //[ValidateAntiForgeryToken]
-        public async Task<string> CreatePage(string pageTitle, string pageBody, string userID) //[Bind("pageName,pageHead,pageBody,userID")]
+        public async Task<string> CreatePage(string URLPageTitle, string URLPageBody, int pageOrder, string userID) //[Bind("pageName,pageHead,pageBody,userID")]
         {
             if (ModelState.IsValid)
             {
+                DateTime now = DateTime.Now;
+                string pageTitle = System.Web.HttpUtility.UrlDecode(URLPageTitle);
+                string pageBody = System.Web.HttpUtility.UrlDecode(URLPageBody);
+
                 WebPage newPage = new WebPage()
                 {
                     PageID = _globalServices.GuidFromString(_globalServices.GetSeed()),
+                    PageDateCreated = now,
+                    PageDateUpdated = now,
+                    PageOrder = pageOrder,
                     PageTitle = pageTitle,
                     PageBody = pageBody,
                     UserID = userID

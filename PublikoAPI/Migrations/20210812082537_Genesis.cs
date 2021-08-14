@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace PublikoAPI.Migrations
 {
@@ -11,9 +12,12 @@ namespace PublikoAPI.Migrations
                 columns: table => new
                 {
                     PageID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PageTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PageOrder = table.Column<int>(type: "int", nullable: false),
+                    PageDateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PageDateUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PageTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PageBody = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserID = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    UserID = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -25,9 +29,11 @@ namespace PublikoAPI.Migrations
                 columns: table => new
                 {
                     PostID = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PostTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PostDateModified = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PostDateCreated = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PostTitle = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PostContent = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserID = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    UserID = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {

@@ -4,12 +4,7 @@
 @using System.Threading;
 
 @{
-    Trace.WriteLine("Start webmodel");
-
-    //while (Model.Pages == null)
-    //{
-    //    Thread.Sleep(100);
-    //}
+    Model.Pages.OrderBy(p => p.PageOrder).ToList();
 }
 
 
@@ -31,35 +26,61 @@
             }
             else
             {
-                for (int i = 0; i < Model.Pages.Count; i++)
+                foreach (var p in Model.Pages.OrderBy(p => p.PageOrder).ToList())
                 {
-                    <a class="pr-3 text-white" href="#" id="0">@Model.Pages[i].PageTitle</a>
+                    <a class="pr-3 text-white" href="#" onclick="ChangePage('@p.PageTitle')"> @p.PageTitle </a>
                 }
 
             }
-            <a class="pr-3 text-white" asp-page="CreatePage">[+]</a>
+
+            @if (Model.Pages.Count < 5)
+            {
+                <a class="pr-3 text-white" asp-page="CreatePage">[+]</a>
+            }
         </div>
     </nav>
 </div>
 
 <div class="container">
-    <div>
-        <h4 class="pt-3">Welcome</h4>
-        <h1>Titulo</h1>
-        <hr />
-        @*@foreach (string block in Model.Pages[0].PageBody.Split('\n'))
-        {
-            <p>@block</p>
-        }*@
-        <p>
-            Main Body
-        </p>
+    @foreach (var p in Model.Pages.OrderBy(p => p.PageOrder).ToList())
+    {
+        <div hidden class="flippers" id="@p.PageTitle">
+            <h4 class="pt-3">@p.PageTitle</h4>
 
-        <p align="right">
-            By: @User.Identity.Name
-        </p>
-    </div>
+            <hr />
+
+            <p>
+                @foreach (var paragraph in p.PageBody.Split('\n'))
+                {
+                    @paragraph
+                }
+            </p>
+
+            <p align="right">
+                By: @User.Identity.Name
+            </p>
+        </div>
+    }
 </div>
+
+<script type="text/javascript">
+
+    function ChangePage(id) {
+        let divElements = document.getElementsByClassName("flippers");
+
+        for (var i = 0; i < divElements.length; i++) {
+            if (divElements[i].id == id) {
+                divElements[i].hidden = false;
+            } else {
+                divElements[i].hidden = true;
+            }
+        }
+    }
+
+</script>
+
+
+
 
 @*<div>
     @if (User.IsInRole("Super user") || User.IsInRole("Admin") || User.IsInRole("Owner"))
