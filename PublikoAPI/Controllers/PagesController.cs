@@ -114,25 +114,31 @@ namespace PublikoAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    string message = "ERROR: Could not save to the database.\n";
+                    string message = "ERROR: PagesController->CreatePage()->TryCatch .\n";
                     return message + e.Message;
                 }
 
                 return "Page saved";
             }
 
-            return "ERROR: Model invalid";
+            return "ERROR: Model invalid : PagesController->CreatePage()->if(ModelState.IsValid)";
         }
 
-        [HttpPost("Create/post/title/{postTitle}/content/{postContent}/user/{userID}")]
+        [HttpPost("~/api/post/create/title/{URLPostTitle}/content/{URLPostContent}/user/{userID}")]
         //[ValidateAntiForgeryToken]
-        public async Task<string> CreatePost(string postTitle, string postContent, string userID) //[Bind("pageName,pageHead,pageBody,userID")]
+        public async Task<string> CreatePost(string URLPostTitle, string URLPostContent, string userID) // user id: 605ad860-4a7c-4a63-821e-09f0af97476e
         {
             if (ModelState.IsValid)
             {
+                DateTime now = DateTime.Now;
+                string postTitle = System.Web.HttpUtility.UrlDecode(URLPostTitle);
+                string postContent = System.Web.HttpUtility.UrlDecode(URLPostContent);
+
                 WebPost newPost = new WebPost()
                 {
                     PostID = _globalServices.GuidFromString(_globalServices.GetSeed()),
+                    PostDateCreated = now,
+                    PostDateModified = now,
                     PostTitle = postTitle,
                     PostContent = postContent,
                     UserID = userID
@@ -145,14 +151,14 @@ namespace PublikoAPI.Controllers
                 }
                 catch (Exception e)
                 {
-                    string message = "ERROR: Could not save to the database.\n";
+                    string message = "ERROR: PagesController->CreatePost()->TryCatch .\n";
                     return message + e.Message;
                 }
 
                 return "Post saved";
             }
 
-            return "ERROR: Model invalid";
+            return "ERROR: Model invalid : PagesController->CreatePost()->if(ModelState.IsValid)";
         }
     }
 }

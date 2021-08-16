@@ -3,24 +3,13 @@
 
 @model PublikoWebApp.Pages.LoggedIn.CreatePageModel
 @{
-    //Model.NewPage.PageID = "Momentaneo";
-    //Model.NewPage.UserID = _userManager.GetUserId(User);
-    var date = DateTime.Now;
-    //var pageOrder = Model.pa
 }
 
 <div class="container pt-5" style="height:100vh">
-    <h2>Create new page</h2>
+    <h2>New Page</h2>
     <hr />
     <div>
         <form asp-action="OnPostAsync" method="post">
-
-            @*<div hidden>
-                <input asp-for="NewPage.UserID" value="@_userManager.GetUserId(User)" class="form-control" />
-                <input asp-for="NewPage.PageID" value="momentaneo" class="form-control" />
-                <input asp-for="NewPage.PageDateCreated" value="@date" class="form-control" />
-                <input asp-for="NewPage.PageDateUpdated" value="@date" class="form-control" />
-            </div>*@
 
             <div class="row">
                 <div class="form-group col-8">

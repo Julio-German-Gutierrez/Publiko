@@ -37,6 +37,20 @@ namespace PublikoWebApp.Services
             //else throw new Exception(response.ReasonPhrase);
         }
 
+        public async Task<string> GetPostsByAuthorIDAsync(string userID)
+        {
+            string searchByAuthorID = $"/api/author/{userID}/posts";
+            string fullURL = baseURL + searchByAuthorID;
+
+            var request = new HttpRequestMessage(HttpMethod.Get, fullURL);
+            var response = await _httpClient.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+            else throw new Exception("Error: StoredPagesServices->GetPostsByAuthorIDAsync()->if(response.IsSuccessStatusCode)");
+        }
 
 
         public List<WebPage> GetAllPagesAsync()
@@ -62,7 +76,25 @@ namespace PublikoWebApp.Services
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return "error";
+                    return "Error: StoredPagesService->CreatePageAsync()->if(!response.IsSuccessStatusCode)";
+                }
+            }
+
+            return "ok";
+        }
+
+        public async Task<string> CreatePostAsync(string uRLPostTitle, string uRLPostContent, string userID)
+        {
+            if (uRLPostTitle != null && uRLPostContent != null && userID != null)
+            {
+                string fullURL = baseURL + $"/api/post/create/title/{uRLPostTitle}/content/{uRLPostContent}/user/{userID}";
+
+                var request = new HttpRequestMessage(HttpMethod.Post, fullURL);
+                HttpResponseMessage response = await _httpClient.SendAsync(request);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return "Error: StoredPagesService->CreatePostAsync()->if(!response.IsSuccessStatusCode)";
                 }
             }
 

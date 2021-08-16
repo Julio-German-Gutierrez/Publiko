@@ -11,8 +11,10 @@ namespace PublikoWebApp.Services
     public interface IStoredPagesService
     {
         Task<string> GetPagesByAuthorIDAsync(string userID); //HttpResponseMessage
+        Task<string> GetPostsByAuthorIDAsync(string userID); //HttpResponseMessage
         List<WebPage> GetAllPagesAsync();
 
         Task<string> CreatePageAsync(string pageTitle, string pageBody, int? pageOrder, string userID);
+        Task<string> CreatePostAsync(string uRLPostTitle, string uRLPostContent, string userID);
     }
 }

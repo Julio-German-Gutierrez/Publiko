@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PublikoWebApp.Services;
@@ -14,11 +15,12 @@ using System.Diagnostics;
 
 namespace PublikoWebApp.Pages.LoggedIn
 {
+    [Authorize]
     public class MyStartModel : PageModel
     {
         public WebPage WebPage { get; set; }
         public List<WebPage> Pages { get; set; }
-        public string pagesJSON;
+        public List<WebPost> Posts { get; set; }
         public MyStartModel(UserManager<IdentityUser> userManager, IStoredPagesService storedPagesService)
         {
             _userManager = userManager;
@@ -34,9 +36,11 @@ namespace PublikoWebApp.Pages.LoggedIn
         {
             string message = await _pagesService
                 .GetPagesByAuthorIDAsync(_userManager.GetUserId(User));
+            string allPosts = await _pagesService
+                .GetPostsByAuthorIDAsync(_userManager.GetUserId(User));
 
             Pages = JsonSerializer.Deserialize< List<WebPage> >(message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            pagesJSON = message;
+            Posts = JsonSerializer.Deserialize< List<WebPost> >(allPosts, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
     }
 }
