@@ -3,30 +3,35 @@
 @{
 }
 
-<div class="container pt-5" style="height:100vh">
-    <h2>New Post</h2>
-    <hr />
-    <div>
-        <form asp-action="OnPostAsync" method="post">
+<div style="height:100vh; background-color:rgb(220,220,220)">
+    <div class="container pt-5" style="height:inherit; background-color: rgb(235,235,235)">
+        <h2>New Post</h2>
+        <hr />
+        <div class="row">
+            <div class="col-2"></div>
+            <div class="col-10">
+                <form asp-action="OnPostAsync" method="post">
 
-            <div class="form-group">
-                <label class="control-label font-weight-bold">Page Title <span style="font-size:smaller;font-weight:normal">(max 12 char.)</span></label>
-                <input asp-for="PostTitle" class="form-control" />
-                <span asp-validation-for="PostTitle" class="text-danger"></span>
+                    <div class="form-group">
+                        <label class="control-label font-weight-bold">Page Title <span style="font-size:smaller;font-weight:normal">(max 12 char.)</span></label>
+                        <input asp-for="PostTitle" class="form-control" />
+                        <span asp-validation-for="PostTitle" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label font-weight-bold">Page Content</label>
+                        <textarea class="form-control text-break" asp-for="PostContent" rows="20"></textarea> <!-- Corregir NEWLINES -->
+                        <div hidden>Antal bokstäver kvar: <span id="IFCounter"></span></div>
+                        <span asp-validation-for="PostContent" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Validate" class="btn btn-primary font-weight-bold" />
+                        <a asp-page="MyStart" class="btn btn-danger font-weight-bold">Cancel</a>
+                    </div>
+
+                </form>
             </div>
-
-            <div class="form-group">
-                <label class="control-label font-weight-bold">Page Content</label>
-                <textarea class="form-control text-break" asp-for="PostContent" rows="20"></textarea> <!-- Corregir NEWLINES -->
-                <div hidden>Antal bokstäver kvar: <span id="IFCounter"></span></div>
-                <span asp-validation-for="PostContent" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <input type="submit" value="Validate" class="btn btn-primary font-weight-bold" />
-                <a asp-page="MyStart" class="btn btn-danger font-weight-bold">Cancel</a>
-            </div>
-
-        </form>
+        </div>
     </div>
 </div>

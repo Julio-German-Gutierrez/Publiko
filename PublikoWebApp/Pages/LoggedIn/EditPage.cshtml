@@ -3,50 +3,52 @@
 @{
 }
 
-<div class="container pt-5" style="height:100vh">
-    <h2>Edit: @Model.EditPage.PageTitle</h2>
-    <hr />
-    <div class="row">
+<div style="height: 100vh; background-color: rgb(220,220,220)">
+    <div class="container pt-5" style="height:inherit; background-color: rgb(235,235,235)">
+        <h2>Edit: @Model.EditPage.PageTitle</h2>
+        <hr />
+        <div class="row">
 
-        <div class="col-2"></div>
+            <div class="col-2"></div>
 
-        <div class="col-8">
-            <form asp-page-handler="Edit" method="post">
+            <div class="col-10">
+                <form asp-page-handler="Edit" method="post">
 
-                <div hidden>
-                    <input asp-for="EditPage.PageDateCreated" class="form-control" />
-                    <input asp-for="EditPage.PageDateUpdated" class="form-control" />
-                    <input asp-for="EditPage.PageID" class="form-control" />
-                    <input asp-for="EditPage.UserID" class="form-control" />
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-8">
-                        <label class="control-label font-weight-bold">Page Title <span style="font-size:smaller;font-weight:normal">(max 12 char.)</span></label>
-                        <input asp-for="EditPage.PageTitle" class="form-control" />
-                        <span asp-validation-for="EditPage.PageTitle" class="text-danger"></span>
+                    <div hidden>
+                        <input asp-for="EditPage.PageDateCreated" class="form-control" />
+                        <input asp-for="EditPage.PageDateUpdated" class="form-control" />
+                        <input asp-for="EditPage.PageID" class="form-control" />
+                        <input asp-for="EditPage.UserID" class="form-control" />
                     </div>
-                    <div class="form-group col-4">
-                        <label class="control-label font-weight-bold">Order</label>
-                        <input asp-for="EditPage.PageOrder" class="form-control" />
-                        <span asp-validation-for="EditPage.PageOrder" class="text-danger"></span>
+
+                    <div class="row">
+                        <div class="form-group col-8">
+                            <label class="control-label font-weight-bold">Page Title <span style="font-size:smaller;font-weight:normal">(max 12 char.)</span></label>
+                            <input asp-for="EditPage.PageTitle" class="form-control" />
+                            <span asp-validation-for="EditPage.PageTitle" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-4">
+                            <label class="control-label font-weight-bold">Order</label>
+                            <input asp-for="EditPage.PageOrder" class="form-control" />
+                            <span asp-validation-for="EditPage.PageOrder" class="text-danger"></span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label class="control-label font-weight-bold">Page Content</label>
-                    <textarea class="form-control text-break" asp-for="EditPage.PageBody" rows="20"></textarea> <!-- Corregir NEWLINES -->
-                    <div hidden>Antal bokstäver kvar: <span id="IFCounter"></span></div>
-                    <span asp-validation-for="EditPage.PageBody" class="text-danger"></span>
-                </div>
+                    <div class="form-group">
+                        <label class="control-label font-weight-bold">Page Content</label>
+                        <textarea class="form-control text-break" asp-for="EditPage.PageBody" rows="20"></textarea> <!-- Corregir NEWLINES -->
+                        <div hidden>Antal bokstäver kvar: <span id="IFCounter"></span></div>
+                        <span asp-validation-for="EditPage.PageBody" class="text-danger"></span>
+                    </div>
 
-                <div class="form-group">
-                    <input type="submit" value="Apply" class="btn btn-primary font-weight-bold" />
-                    <a asp-page="MyStart" class="btn btn-danger font-weight-bold">Cancel</a>
-                </div>
+                    <div class="form-group">
+                        <input type="submit" value="Apply" class="btn btn-primary font-weight-bold" />
+                        <a asp-page="MyStart" class="btn btn-danger font-weight-bold">Cancel</a>
+                    </div>
 
-            </form>
+                </form>
+            </div>
+
         </div>
-
     </div>
 </div>

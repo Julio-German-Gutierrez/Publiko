@@ -132,7 +132,7 @@ namespace PublikoWebApp.Services
             }
             else
             {
-                return "Error: StoredPagesService->EditPageAsync()->if (response.IsSuccessStatusCode)";
+                return "Error: StoredPagesService->EditPageAsync()->if(response.IsSuccessStatusCode)";
             }
 
         }
