@@ -49,9 +49,10 @@ namespace PublikoAPI.Controllers
         [Produces("application/json")]
         public async Task<WebPage> GetPageByID(string pageID) //ContentResult
         {
-            var page = _pagesDBContext.Pages.FindAsync(pageID);// FirstOrDefault(i => pageID == i.PageID);
+            WebPage page = await _pagesDBContext.Pages.FindAsync(pageID);// FirstOrDefault(i => pageID == i.PageID);
 
-            return await page;
+
+            return page;
         }
 
         //Post by ID             ----------->>>>>>>>>>>>>>>>>>>>>>>> ID = 0d6fe52d-643d-5b37-e579-3b61caeb386e  OR  f6ccea1a-003a-5a3f-49ba-3014e0678c3c
@@ -159,6 +160,26 @@ namespace PublikoAPI.Controllers
             }
 
             return "ERROR: Model invalid : PagesController->CreatePost()->if(ModelState.IsValid)";
+        }
+
+        [HttpPut("~/api/edit/{pageID}/title/{URLPageTitle}/body/{URLPageBody}/order/{pageOrder}")]
+        public async Task<string> EditPageAsync(string pageID, string URLPageTitle, string URLPageBody, int pageOrder)
+        {
+            WebPage webPage = await _pagesDBContext.Pages.FindAsync(pageID);
+
+            if (webPage != null)
+            {
+                webPage.PageTitle = System.Web.HttpUtility.UrlDecode(URLPageTitle);
+                webPage.PageBody = System.Web.HttpUtility.UrlDecode(URLPageBody);
+                webPage.PageOrder = pageOrder;
+
+                _pagesDBContext.Pages.Update(webPage);
+                await _pagesDBContext.SaveChangesAsync();
+
+                return "Entry Updated";
+            }
+
+            return "Error: Could not find the entry : PagesController->EditPageAsync()->if(webPage != null)";
         }
     }
 }

@@ -16,5 +16,7 @@ namespace PublikoWebApp.Services
 
         Task<string> CreatePageAsync(string pageTitle, string pageBody, int? pageOrder, string userID);
         Task<string> CreatePostAsync(string uRLPostTitle, string uRLPostContent, string userID);
+        Task<string> GetPageByIDAsync(string id);
+        Task<string> EditPageAsync(string pageID, string pageTitle, string pageBody, int pageOrder);
     }
 }

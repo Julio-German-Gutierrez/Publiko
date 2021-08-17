@@ -85,7 +85,7 @@
     @foreach (var p in Model.Pages.OrderBy(p => p.PageOrder).ToList())
     {
         <div hidden class="flippers" id="@p.PageTitle">
-            <h2 class="pt-3">@p.PageTitle</h2>
+            <h2 class="pt-3">@p.PageTitle</h2><a class="text-black-50" style="font-size:smaller" asp-page="EditPage" asp-route-id="@p.PageID">[Edit Page]</a>
 
             <hr />
 

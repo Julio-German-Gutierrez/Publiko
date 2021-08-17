@@ -101,5 +101,40 @@ namespace PublikoWebApp.Services
             return "ok";
         }
 
+        public async Task<string> GetPageByIDAsync(string id)
+        {
+            string fullURL = baseURL + $"/api/page/{id}";
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, fullURL);
+            var response = await _httpClient.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsStringAsync();
+            }
+
+            return "Error: StoredPagesService->GetPageByIDAsync()->if (response.IsSuccessStatusCode)";
+        }
+
+        public async Task<string> EditPageAsync(string pageID, string pageTitle, string pageBody, int pageOrder)
+        {
+            string URLPageTitle = System.Web.HttpUtility.UrlEncodeUnicode(pageTitle);
+            string URLPageBody = System.Web.HttpUtility.UrlEncodeUnicode(pageBody);
+
+            string fullURL = baseURL + $"/api/edit/{pageID}/title/{URLPageTitle}/body/{URLPageBody}/order/{pageOrder}";
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, fullURL);
+            var response = await _httpClient.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+            {
+                return "Page Updated";
+            }
+            else
+            {
+                return "Error: StoredPagesService->EditPageAsync()->if (response.IsSuccessStatusCode)";
+            }
+
+        }
     }
 }
