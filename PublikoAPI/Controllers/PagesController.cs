@@ -172,6 +172,7 @@ namespace PublikoAPI.Controllers
                 webPage.PageTitle = System.Web.HttpUtility.UrlDecode(URLPageTitle);
                 webPage.PageBody = System.Web.HttpUtility.UrlDecode(URLPageBody);
                 webPage.PageOrder = pageOrder;
+                webPage.PageDateUpdated = DateTime.Now;
 
                 _pagesDBContext.Pages.Update(webPage);
                 await _pagesDBContext.SaveChangesAsync();
@@ -180,6 +181,26 @@ namespace PublikoAPI.Controllers
             }
 
             return "Error: Could not find the entry : PagesController->EditPageAsync()->if(webPage != null)";
+        }
+
+        [HttpPut("~/api/postedit/{postID}/title/{URLPostTitle}/body/{URLPostContent}")]
+        public async Task<string> EditPageAsync(string postID, string URLPostTitle, string URLPostContent)
+        {
+            WebPost toEditPost = await _pagesDBContext.Posts.FindAsync(postID);
+
+            if (toEditPost != null)
+            {
+                toEditPost.PostTitle = System.Web.HttpUtility.UrlDecode(URLPostTitle);
+                toEditPost.PostContent = System.Web.HttpUtility.UrlDecode(URLPostContent);
+                toEditPost.PostDateModified = DateTime.Now;
+
+                _pagesDBContext.Posts.Update(toEditPost);
+                await _pagesDBContext.SaveChangesAsync();
+
+                return "Entry Updated";
+            }
+
+            return "Error: Could not find the entry : PagesController->EditPostAsync()->if(toEditPost != null)";
         }
     }
 }

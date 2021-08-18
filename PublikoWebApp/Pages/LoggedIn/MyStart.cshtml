@@ -54,24 +54,25 @@
             {
                 <div class="row">
                     <div class="col-2"></div>
-                    <div class="col-10">
+                    <div class="col-10 overflow-hidden">
                         @foreach (var post in Model.Posts.OrderByDescending(p => p.PostDateCreated).ToList())
                         {
                             <h3>@post.PostTitle</h3>
-                            <div class="text-black-50"><span style="font-size:smaller">Created: </span><span style="font-size:smaller;font-style:italic">@post.PostDateCreated</span></div>
+                            <span class="text-black-50 font-italic" style="font-size:smaller">Updated on: @post.PostDateModified</span>
                             <hr />
 
                             <div class="pb-4">
-                                @foreach (var paragraph in post.PostContent.Split('\n'))
+                                @*@foreach (var paragraph in post.PostContent.Split('\n'))
                                 {
                                     <p>
                                         @paragraph
                                     </p>
-                                }
+                                }*@
+                                @Html.Raw(post.PostContent)
                             </div>
 
                             <div class="d-flex justify-content-between">
-                                <a class="text-black-50" href="#">[Edit]</a>
+                                <a class="text-black-50" asp-page="EditPost" asp-route-id="@post.PostID">[Edit]</a>
                                 <span>By: @User.Identity.Name</span>
                             </div>
 
@@ -85,21 +86,24 @@
 
         @foreach (var p in Model.Pages.OrderBy(p => p.PageOrder).ToList())
         {
-            <div hidden class="flippers" id="@p.PageTitle">
-                <h2 class="pt-3">@p.PageTitle</h2><a class="text-black-50" style="font-size:smaller" asp-page="EditPage" asp-route-id="@p.PageID">[Edit Page]</a>
+            <div hidden class="flippers overflow-hidden" id="@p.PageTitle">
+                <h2 class="pt-3">@p.PageTitle</h2><a class="text-black-50" asp-page="EditPage" asp-route-id="@p.PageID">[Edit Page]</a>
 
                 <hr />
 
-                @foreach (var paragraph in p.PageBody.Split('\n'))
+                @*@foreach (var paragraph in p.PageBody.Split('\n'))
                 {
                     <p>
                         @paragraph
                     </p>
-                }
+                }*@
 
-                <p align="right">
-                    By: @User.Identity.Name
-                </p>
+                @Html.Raw(p.PageBody)
+
+                <div class="d-flex justify-content-between">
+                    <a class="text-black-50 font-italic" style="font-size:smaller">Updated on: @p.PageDateUpdated</a>
+                    <span>By: @User.Identity.Name</span>
+                </div>
             </div>
         }
 
