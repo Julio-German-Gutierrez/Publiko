@@ -18,6 +18,7 @@ namespace PublikoWebApp.Pages.LoggedIn
         public string PageBody { get; set; }
         [BindProperty]
         public int PageOrder { get; set; }
+        public int AmountPages { get; set; }
 
         public CreatePageModel(IStoredPagesService storedPagesService, UserManager<IdentityUser> userManager)
         {
@@ -28,8 +29,9 @@ namespace PublikoWebApp.Pages.LoggedIn
         public IStoredPagesService _storedPagesService { get; }
         public UserManager<IdentityUser> _userManager { get; }
 
-        public void OnGet()
+        public void OnGet(int pages)
         {
+            AmountPages = pages;
         }
 
         public async Task<IActionResult> OnPostAsync()

@@ -4662,6 +4662,12 @@ textarea.form-control-lg {
   border-radius: 0.25rem;
 }
 
+.alertger {
+    position: relative;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
 .alert-heading {
   color: inherit;
 }

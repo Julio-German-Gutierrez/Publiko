@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using PublikoAPI.Data;
 using PublikoSharedLibrary.Models;
 using PublikoAPI.Services;
+using System.Net.Http;
+using System.Net;
 
 namespace PublikoAPI.Controllers
 {
@@ -201,6 +203,42 @@ namespace PublikoAPI.Controllers
             }
 
             return "Error: Could not find the entry : PagesController->EditPostAsync()->if(toEditPost != null)";
+        }
+
+
+
+        //97437952-9e2f-8397-415b-c97cc00d7dc2
+
+        [HttpGet("~/api/deletepage/{id}")]
+        public async Task<IActionResult> DeletePageByID(string id = null)
+        {
+            if (id != null)
+            {
+                var toRemove = await _pagesDBContext.Pages.FindAsync(id);
+                var response = _pagesDBContext.Pages.Remove(toRemove);
+                await _pagesDBContext.SaveChangesAsync();
+
+                return Ok();
+            }
+            //return "Error: PagesController->DeletePageByID()->if( id! = null )";
+            //return new HttpResponseMessage(HttpStatusCode.NotFound);
+            return NotFound();
+        }
+
+        [HttpGet("~/api/deletepost/{id}")]
+        public async Task<IActionResult> DeletePostByID(string id = null)
+        {
+            if (id != null)
+            {
+                var toRemove = await _pagesDBContext.Posts.FindAsync(id);
+                var response = _pagesDBContext.Posts.Remove(toRemove);
+                await _pagesDBContext.SaveChangesAsync();
+
+                return Ok();
+            }
+            //return "Error: PagesController->DeletePageByID()->if( id! = null )";
+            //return new HttpResponseMessage(HttpStatusCode.NotFound);
+            return NotFound();
         }
     }
 }

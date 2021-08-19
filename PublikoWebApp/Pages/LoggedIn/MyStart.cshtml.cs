@@ -12,6 +12,7 @@ using PublikoWebApp.Services;
 using PublikoSharedLibrary.Models;
 
 using System.Diagnostics;
+using System.IO;
 
 namespace PublikoWebApp.Pages.LoggedIn
 {
@@ -21,6 +22,19 @@ namespace PublikoWebApp.Pages.LoggedIn
         public WebPage WebPage { get; set; }
         public List<WebPage> Pages { get; set; }
         public List<WebPost> Posts { get; set; }
+
+        //[Bind]
+        public string ToDeleteID { get; set; }
+
+
+        //para contador fallido
+        public long ViewsNumber { get; set; }
+        class AppCookiesModel
+        {
+            public long NumberOfViews { get; set; }
+        }
+
+        //Constructor
         public MyStartModel(UserManager<IdentityUser> userManager, IStoredPagesService storedPagesService)
         {
             _userManager = userManager;
@@ -34,13 +48,27 @@ namespace PublikoWebApp.Pages.LoggedIn
 
         public async Task OnGetAsync()
         {
+            //Contador se ejecuta 2 veces por alguna razon que de momento desconozco
+            string myCookies = System.IO.File.ReadAllText("appdata/appcookies.json");
+            var opt = new System.Text.Json.JsonSerializerOptions() { PropertyNameCaseInsensitive = true };
+            AppCookiesModel appData = System.Text.Json.JsonSerializer.Deserialize<AppCookiesModel>(myCookies, opt);
+            ViewsNumber = ++appData.NumberOfViews;
+            string appDataJSON = System.Text.Json.JsonSerializer.Serialize(appData);
+            System.IO.File.WriteAllText("appdata/appcookies.json", appDataJSON);
+
+
             string message = await _pagesService
                 .GetPagesByAuthorIDAsync(_userManager.GetUserId(User));
             string allPosts = await _pagesService
                 .GetPostsByAuthorIDAsync(_userManager.GetUserId(User));
 
-            Pages = JsonSerializer.Deserialize< List<WebPage> >(message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            Posts = JsonSerializer.Deserialize< List<WebPost> >(allPosts, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            Pages = JsonSerializer.Deserialize<List<WebPage>>(message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            Posts = JsonSerializer.Deserialize<List<WebPost>>(allPosts, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        }
+
+        public void OnPost(string id)
+        {
+
         }
     }
 }
