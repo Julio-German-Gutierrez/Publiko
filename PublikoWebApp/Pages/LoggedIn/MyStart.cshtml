@@ -58,7 +58,7 @@
                         @foreach (var post in Model.Posts.OrderByDescending(p => p.PostDateCreated).ToList())
                         {
                             <h3>@post.PostTitle</h3>
-                            <span class="text-black-50 font-italic" style="font-size:smaller">Updated on: @post.PostDateModified</span>
+                            <span class="text-black-50 font-italic" style="font-size:smaller">Updated: @post.PostDateModified.ToString("M")</span>
                             <hr />
 
                             <div class="pb-4">
@@ -88,12 +88,6 @@
             <div hidden class="flippers overflow-hidden" id="@p.PageTitle">
                 <h2 class="pt-3">@p.PageTitle</h2>
 
-                <!--Not used for the moment (hidden)-->
-                <form hidden asp-action="OnPost" method="post">
-                    <a class="text-black-50" asp-page="EditPage" asp-route-id="@p.PageID">[Edit Page]</a>
-                    <input type="submit" value="[Delete Page]" asp-route-id="@p.PageID" class="text-danger" style="border:none">
-                </form>
-
                 <div>
                     <a class="text-black-50" asp-page="EditPage" asp-route-id="@p.PageID">[Edit Page]</a>
                     <a class="text-danger" href="#" onclick="DeletePage('@p.PageID')">[Delete Page]</a>
@@ -104,7 +98,7 @@
                 @Html.Raw(p.PageBody)
 
                 <div class="d-flex justify-content-between">
-                    <a class="text-black-50 font-italic" style="font-size:smaller">Updated on: @p.PageDateUpdated</a>
+                    <a class="text-black-50 font-italic" style="font-size:smaller">Updated: @p.PageDateUpdated.ToString("M")</a>
                     <span>By: @User.Identity.Name</span>
                 </div>
             </div>
@@ -129,18 +123,18 @@
             $.ajax({
                 type: "GET",
                 url: "https://localhost:5001/api/deletepage/" + id,
-                contentType: "application/json; charset=utf-8",
-                dataType: "jsonp",
-                success: function (data) {
-                    console.log("success" + data.responseText);
+                //contentType: "application/json; charset=utf-8",
+                //dataType: "jsonp",
+                success: function (result) {
+                    console.log("success");
                     window.location.reload(true);
                 }, //End of AJAX Success function
 
-                failure: function (data) {
-                    console.log("Failure: " + data.responseText);
-                    window.location.reload(true);
-                }, //End of AJAX failure function
-                error: function (data) {
+                //failure: function (data) {
+                //    console.log("Failure: " + data.responseText);
+                //    window.location.reload(true);
+                //}, //End of AJAX failure function
+                error: function (xhr) {
                     console.log("Error: MyStart->-JAVASCRIPT:DeletePage(id)->ajax->error");
                     window.location.reload(true);
                 } //End of AJAX error function
