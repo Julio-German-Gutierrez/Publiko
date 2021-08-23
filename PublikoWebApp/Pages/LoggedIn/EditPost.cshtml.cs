@@ -26,7 +26,8 @@ namespace PublikoWebApp.Pages.LoggedIn
 
         public async Task OnGet(string id)
         {
-            string message = await _storedPagesService.GetPostByIDAsync(id);
+            var userObject = await _userManager.GetUserAsync(User);
+            string message = await _storedPagesService.GetPostByIDAsync(id, userObject);
             ToEditPost = JsonSerializer.Deserialize<WebPost>(message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
@@ -34,7 +35,8 @@ namespace PublikoWebApp.Pages.LoggedIn
         {
             if (ModelState.IsValid)
             {
-                string result = await _storedPagesService.EditPostAsync(ToEditPost.PostID, ToEditPost.PostTitle, ToEditPost.PostContent);
+                var userObject = await _userManager.GetUserAsync(User);
+                string result = await _storedPagesService.EditPostAsync(ToEditPost.PostID, ToEditPost.PostTitle, ToEditPost.PostContent, userObject);
 
                 if (result == "Post Updated")
                 {

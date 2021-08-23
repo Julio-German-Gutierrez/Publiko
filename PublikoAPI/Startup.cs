@@ -7,18 +7,22 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using PublikoAPI.Data;
 using PublikoAPI.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace PublikoAPI
 {
     public class Startup
     {
+        private const string SECRET_KEY = "kdhfjksdhfjk89347589ueroghdfjklgh8954tyu9845hginrtgol856y7";
+        public static readonly SymmetricSecurityKey SIGN_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -36,6 +40,25 @@ namespace PublikoAPI
                     Configuration.GetConnectionString("APIConnection")));
 
             services.AddControllers();
+
+            //Add Token functionality
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "JwtBearer";
+                options.DefaultChallengeScheme = "JwtBearer";
+            }).AddJwtBearer("JwtBearer", jwtOptions => {
+                jwtOptions.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    IssuerSigningKey = SIGN_KEY,
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = "https://localhost:44353/",
+                    ValidAudience = "https://localhost:5001",
+                    ValidateLifetime = true
+                };
+            });
+            //End added token
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PublikoAPI", Version = "v1" });
@@ -56,6 +79,7 @@ namespace PublikoAPI
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

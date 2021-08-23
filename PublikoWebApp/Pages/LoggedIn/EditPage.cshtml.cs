@@ -27,7 +27,8 @@ namespace PublikoWebApp.Pages.LoggedIn
         
         public async Task OnGetAsync(string id) //I got the ID from the template on the HtmlPage
         {
-            string message = await _storedPagesService.GetPageByIDAsync(id);
+            var userObject = await _userManager.GetUserAsync(User);
+            string message = await _storedPagesService.GetPageByIDAsync(id, userObject);
             EditPage = JsonSerializer.Deserialize<WebPage>(message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         }
 
@@ -35,7 +36,8 @@ namespace PublikoWebApp.Pages.LoggedIn
         {
             if (ModelState.IsValid)
             {
-                string result = await _storedPagesService.EditPageAsync(EditPage.PageID, EditPage.PageTitle, EditPage.PageBody, EditPage.PageOrder);
+                var userObject = await _userManager.GetUserAsync(User);
+                string result = await _storedPagesService.EditPageAsync(EditPage.PageID, EditPage.PageTitle, EditPage.PageBody, EditPage.PageOrder, userObject);
 
                 if (result == "Page Updated")
                 {

@@ -56,10 +56,12 @@ namespace PublikoWebApp.Pages.LoggedIn
             string appDataJSON = System.Text.Json.JsonSerializer.Serialize(appData);
             System.IO.File.WriteAllText("appdata/appcookies.json", appDataJSON);
 
+            var userCalling = await _userManager.GetUserAsync(User);
+
             string message = await _pagesService
-                .GetPagesByAuthorIDAsync(_userManager.GetUserId(User));
+                .GetPagesByAuthorIDAsync(_userManager.GetUserId(User), userCalling);
             string allPosts = await _pagesService
-                .GetPostsByAuthorIDAsync(_userManager.GetUserId(User));
+                .GetPostsByAuthorIDAsync(_userManager.GetUserId(User), userCalling);
 
             Pages = JsonSerializer.Deserialize<List<WebPage>>(message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             Posts = JsonSerializer.Deserialize<List<WebPost>>(allPosts, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });

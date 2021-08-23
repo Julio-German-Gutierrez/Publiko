@@ -39,10 +39,11 @@ namespace PublikoWebApp.Pages.LoggedIn
             if (ModelState.IsValid)
             {
                 string userID = _userManager.GetUserId(User);
+                var userObject = await _userManager.GetUserAsync(User);
                 string URLPageTitle = System.Web.HttpUtility.UrlEncodeUnicode(PageTitle);
                 string URLPageBody = System.Web.HttpUtility.UrlEncodeUnicode(PageBody);
 
-                string result = await _storedPagesService.CreatePageAsync(URLPageTitle, URLPageBody, PageOrder, userID);
+                string result = await _storedPagesService.CreatePageAsync(URLPageTitle, URLPageBody, PageOrder, userID, userObject);
                 if (result == "ok")
                 {
                     return RedirectToPage("MyStart");

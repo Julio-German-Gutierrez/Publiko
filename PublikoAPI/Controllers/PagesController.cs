@@ -8,6 +8,7 @@ using PublikoSharedLibrary.Models;
 using PublikoAPI.Services;
 using System.Net.Http;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PublikoAPI.Controllers
 {
@@ -27,6 +28,7 @@ namespace PublikoAPI.Controllers
 
 
         //All pages
+        [Authorize]
         [HttpGet("allpages")]
         [Produces("application/json")]
         public IEnumerable<WebPage> GetPages() //ContentResult
@@ -39,6 +41,7 @@ namespace PublikoAPI.Controllers
         //All posts
         [HttpGet("allposts")]
         [Produces("application/json")]
+        [Authorize]
         public IEnumerable<WebPost> GetPosts() //ContentResult
         {
             var posts = _pagesDBContext.Posts.AsEnumerable();
@@ -46,7 +49,8 @@ namespace PublikoAPI.Controllers
             return posts;
         }
 
-        //Page by ID             ----------->>>>>>>>>>>>>>>>>>>>>>>> ID = 0d6fe52d-643d-5b37-e579-3b61caeb386e  OR  f6ccea1a-003a-5a3f-49ba-3014e0678c3c
+        //Page by ID             ----------->>>>>>>>>>>>>>>>>>>>>>>> Elber: 605ad860-4a7c-4a63-821e-09f0af97476e
+        [Authorize]
         [HttpGet("~/api/page/{pageID}")]
         [Produces("application/json")]
         public async Task<WebPage> GetPageByID(string pageID) //ContentResult
@@ -58,6 +62,7 @@ namespace PublikoAPI.Controllers
         }
 
         //Post by ID             ----------->>>>>>>>>>>>>>>>>>>>>>>> ID = 0d6fe52d-643d-5b37-e579-3b61caeb386e  OR  f6ccea1a-003a-5a3f-49ba-3014e0678c3c
+        [Authorize]
         [HttpGet("~/api/post/{postID}")]
         [Produces("application/json")]
         public async Task<WebPost> GetPostByID(string postID) //ContentResult
@@ -71,6 +76,7 @@ namespace PublikoAPI.Controllers
         //All pages by author    ----------->>>>>>>>>>>>>>>>>>>>>>>> ID = 605ad860-4a7c-4a63-821e-09f0af97476e
         [HttpGet("~/api/author/{authorID}/pages")]
         [Produces("application/json")]
+        [Authorize]
         public IEnumerable<WebPage> GetPagesbyAuthor(string authorID) //ContentResult
         {
             var pages = _pagesDBContext.Pages.Where(i => authorID == i.UserID);
@@ -81,6 +87,7 @@ namespace PublikoAPI.Controllers
         //All posts by author    ----------->>>>>>>>>>>>>>>>>>>>>>>> ID = 605ad860-4a7c-4a63-821e-09f0af97476e
         [HttpGet("~/api/author/{authorID}/posts")]
         [Produces("application/json")]
+        [Authorize]
         public IEnumerable<WebPost> GetPostsbyAuthor(string authorID) //ContentResult
         {
             var posts = _pagesDBContext.Posts.Where(i => authorID == i.UserID);
@@ -90,6 +97,7 @@ namespace PublikoAPI.Controllers
 
 
         [HttpPost("Create/page/title/{URLPageTitle}/body/{URLPageBody}/order/{pageOrder}/user/{userID}")]
+        [Authorize]
         //[ValidateAntiForgeryToken]
         public async Task<string> CreatePage(string URLPageTitle, string URLPageBody, int pageOrder, string userID) //[Bind("pageName,pageHead,pageBody,userID")]
         {
@@ -128,6 +136,7 @@ namespace PublikoAPI.Controllers
         }
 
         [HttpPost("~/api/post/create/title/{URLPostTitle}/content/{URLPostContent}/user/{userID}")]
+        [Authorize]
         //[ValidateAntiForgeryToken]
         public async Task<string> CreatePost(string URLPostTitle, string URLPostContent, string userID) // user id: 605ad860-4a7c-4a63-821e-09f0af97476e
         {
@@ -165,6 +174,7 @@ namespace PublikoAPI.Controllers
         }
 
         [HttpPut("~/api/edit/{pageID}/title/{URLPageTitle}/body/{URLPageBody}/order/{pageOrder}")]
+        [Authorize]
         public async Task<string> EditPageAsync(string pageID, string URLPageTitle, string URLPageBody, int pageOrder)
         {
             WebPage webPage = await _pagesDBContext.Pages.FindAsync(pageID);
@@ -186,7 +196,8 @@ namespace PublikoAPI.Controllers
         }
 
         [HttpPut("~/api/postedit/{postID}/title/{URLPostTitle}/body/{URLPostContent}")]
-        public async Task<string> EditPageAsync(string postID, string URLPostTitle, string URLPostContent)
+        [Authorize]
+        public async Task<string> EditPostAsync(string postID, string URLPostTitle, string URLPostContent)
         {
             WebPost toEditPost = await _pagesDBContext.Posts.FindAsync(postID);
 
@@ -208,7 +219,8 @@ namespace PublikoAPI.Controllers
 
 
         //97437952-9e2f-8397-415b-c97cc00d7dc2
-
+        //These last two methods are called not from c# but from Javascript (on the fly)
+        //Still not protected by token. I will need to implement a Server service to deliver the tokens.
         [HttpGet("~/api/deletepage/{id}")]
         public async Task<IActionResult> DeletePageByID(string id = null)
         {
