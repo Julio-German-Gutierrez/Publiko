@@ -4,35 +4,35 @@
     
 }
 
-<div style="height:100vh;background-color:rgb(220,220,220)">
-    <div class="container" style="background-color:rgb(235,235,235);height:95vh">
-        <h1 style="padding:20px">Administration</h1>
-        <hr />
+<div class="d-flex justify-content-center" style="height:100vh;background-color:rgb(220,220,220)">
+    <div class="container justify-content-sm-center" style="background-color:rgb(235,235,235);height:100vh">
+        <div><h1 class="p-1 p-sm-2 p-lg-4">Administration</h1></div>
+        @*<hr />*@
 
         <!--Menu Buttons-->
-        <div class="d-flex" style="padding:10px" id="wrapper">
+        <div class="row p-0 p-sm-2 p-md-4 p-lg-4" style="padding:10px" id="wrapper">
             <!-- Sidebar-->
-            <div class="border-end" id="sidebar-wrapper">
-                <div class="list-group list-group-flush">
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3 bg-primary text-white bmenu" href="#" id="busers">Users</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3 bg-primary text-white bmenu" href="#" id="bactions">Actions</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3 bg-primary text-white bmenu" href="#" id="boverview">Overview</a>
-                    <a class="list-group-item list-group-item-action list-group-item-light p-3 bg-primary text-white bmenu" href="#" id="bstatus">Status</a>
+            <div class="border-end col-lg-2 col-md-2 col-sm-12 col-12 bg-primary overflow-hidden" id="sidebar-wrapper">
+                <div class="row">
+                    <a class="btn p-3 bg-primary text-white bmenu col-lg-12 col-md-12 col-sm-3 col-3" href="#" id="busers">Users</a>
+                    <a class="btn p-3 bg-primary text-white bmenu col-lg-12 col-md-12 col-sm-3 col-3" href="#" id="bactions">Actions</a>
+                    <a class="btn p-3 bg-primary text-white bmenu col-lg-12 col-md-12 col-sm-3 col-3" href="#" id="boverview">Overview</a>
+                    <a class="btn p-3 bg-primary text-white bmenu col-lg-12 col-md-12 col-sm-3 col-3" href="#" id="bstatus">Status</a>
                 </div>
             </div>
 
 
             <!-- Page content wrapper-->
-            <div class="container bg-white" id="page-content-wrapper">
+            <div class="container bg-white col-lg-10 col-md-10 col-sm-12 col-12" id="page-content-wrapper">
                 <!-- Page content-->
                 <form method="post">
-                    <div class="form-group d-flex justify-content-end" style="padding:30px">
+                    <div class="form-group d-flex justify-content-end" style="padding:15px">
                         <button class="btn btn-danger" type="submit">Save Changes</button>
                     </div>
 
                     <!--USERS-->
                     <div class="areas">
-                        <div class="container" id="users">
+                        <div class="" id="users">
                             <h2 class="mt-4">Users</h2>
                             <p>Selected user: <span id="selectedUserShow" class="text-danger">[None]</span></p>
                             <hr />
