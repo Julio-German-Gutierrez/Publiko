@@ -44,12 +44,14 @@ namespace PublikoWebApp
                 options.UseSqlServer(
                     Configuration.GetConnectionString("IdentityConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<PublikoIdentityDbContext>();
 
             services.AddHttpClient();
 
             //START Added by me.
+
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -89,6 +91,13 @@ namespace PublikoWebApp
 
             services.AddRazorPages();
             services.AddRazorPages().AddRazorRuntimeCompilation();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdministratorAccess", policy =>
+                policy.RequireRole("Admin")
+                );
+            });
 
         }
 

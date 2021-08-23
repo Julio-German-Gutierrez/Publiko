@@ -46,7 +46,7 @@ namespace PublikoWebApp.Pages.LoggedIn
 
 
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(string userName = null)
         {
             //Contador se ejecuta 2 veces por alguna razon que de momento desconozco
             string myCookies = System.IO.File.ReadAllText("appdata/appcookies.json");
@@ -55,7 +55,6 @@ namespace PublikoWebApp.Pages.LoggedIn
             ViewsNumber = ++appData.NumberOfViews;
             string appDataJSON = System.Text.Json.JsonSerializer.Serialize(appData);
             System.IO.File.WriteAllText("appdata/appcookies.json", appDataJSON);
-
 
             string message = await _pagesService
                 .GetPagesByAuthorIDAsync(_userManager.GetUserId(User));
