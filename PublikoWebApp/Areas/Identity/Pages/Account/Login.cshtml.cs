@@ -19,13 +19,16 @@ namespace PublikoWebApp.Areas.Identity.Pages.Account
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        public RoleManager<IdentityRole> _roleManager { get; }
         private readonly ILogger<LoginModel> _logger;
 
         public LoginModel(SignInManager<IdentityUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<IdentityUser> userManager)
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
+            _roleManager = roleManager;
             _signInManager = signInManager;
             _logger = logger;
         }
@@ -88,6 +91,13 @@ namespace PublikoWebApp.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
+
+                    //If user is admin
+                    if (IsAdminAsync(Input.Name).Result)
+                    {
+                        return LocalRedirect("~/Admin/IndexAdmin");
+                    }
+
                     return LocalRedirect("~/LoggedIn/MyStart");
                 }
                 if (result.RequiresTwoFactor)
@@ -108,6 +118,20 @@ namespace PublikoWebApp.Areas.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+        public async Task<bool> IsAdminAsync(string userName)
+        {
+            var usersRole = await _userManager.GetUsersInRoleAsync("Admin"); //List of users in Admin role
+            var userToCheck = await _userManager.FindByNameAsync(Input.Name);
+            foreach (var u in usersRole)
+            {
+                if (u.Id == userToCheck.Id)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

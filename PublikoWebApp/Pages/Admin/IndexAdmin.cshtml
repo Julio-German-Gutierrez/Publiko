@@ -1,0 +1,287 @@
+﻿@page
+@model PublikoWebApp.Pages.Admin.IndexAdminModel
+@{
+    
+}
+
+<div style="height:100vh;background-color:rgb(220,220,220)">
+    <div class="container" style="background-color:rgb(235,235,235);height:95vh">
+        <h1 style="padding:20px">Administration</h1>
+        <hr />
+
+        <!--Menu Buttons-->
+        <div class="d-flex" style="padding:10px" id="wrapper">
+            <!-- Sidebar-->
+            <div class="border-end" id="sidebar-wrapper">
+                <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3 bg-primary text-white bmenu" href="#" id="busers">Users</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3 bg-primary text-white bmenu" href="#" id="bactions">Actions</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3 bg-primary text-white bmenu" href="#" id="boverview">Overview</a>
+                    <a class="list-group-item list-group-item-action list-group-item-light p-3 bg-primary text-white bmenu" href="#" id="bstatus">Status</a>
+                </div>
+            </div>
+
+
+            <!-- Page content wrapper-->
+            <div class="container bg-white" id="page-content-wrapper">
+                <!-- Page content-->
+                <form method="post">
+                    <div class="form-group d-flex justify-content-end" style="padding:30px">
+                        <button class="btn btn-danger" type="submit">Save Changes</button>
+                    </div>
+
+                    <!--USERS-->
+                    <div class="areas">
+                        <div class="container" id="users">
+                            <h2 class="mt-4">Users</h2>
+                            <p>Selected user: <span id="selectedUserShow" class="text-danger">[None]</span></p>
+                            <hr />
+
+                            <table class="table table-hover">
+                                <thead class="thead-dark">
+                                    <tr class="">
+                                        <th>Name</th>
+                                        <th>Access</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.listOfUsers)
+                                    {
+                                        <tr onclick="SelectUser('@item[3]')">
+                                            <td>@item[0]</td>
+                                            <td>@item[5]</td>
+                                        </tr>
+                                    }
+                                </tbody>
+
+                            </table>
+
+                            <div hidden id="selectedUserHidden"></div>
+
+                            <!-- Buttons previous-next -->
+                            <div class="d-flex justify-content-end" role="group">
+                                <div class="btn-group" style="padding:30px">
+                                    <button type="button" class="btn btn-primary">Previous</button>
+                                    <button type="button" class="btn btn-primary">Next</button>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!--ACTIONS-->
+                        <div class="container-fluid" id="actions">
+                            <h2 class="mt-4">Actions</h2>
+                            <p>Selected user: <span id="selectedUserAction" class="text-danger"></span></p>
+
+                            <div class="container form-group">
+                                <table class="table">
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex justify-content-between">
+                                                <div>Lock account</div>
+                                                <div>
+                                                    <label class="switch">
+                                                        <input name="userLock" id="lockid" type="checkbox" class="menues">
+                                                        <span class="slider round"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex justify-content-between">
+                                                <div id="temporal">Reset Password</div>
+                                                <div>
+                                                    <label class="switch">
+                                                        <input name="userPassReset" type="checkbox" onclick="ResetToTemporal()" class="menues">
+                                                        <span class="slider round"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                        </div>
+
+                        <!--OVERVIEW-->
+                        <div class="container-fluid" id="overview">
+                            <!--menues-->
+                            <h2 class="mt-4">Overview</h2>
+                            <p>Account information: <span id="selectedUserOverview" class="text-danger"></span></p>
+
+
+                            <div class="form-group">
+                                <label class="control-label font-weight-bold">Name</label>
+                                <input name="userName" value="" class="form-control menues" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label font-weight-bold">Email</label>
+                                <input name="userEmail" value="" class="form-control menues" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label font-weight-bold">Phone</label>
+                                <input name="userPhone" value="" class="form-control menues" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label font-weight-bold">Id</label>
+                                <input name="userID" value="" class="form-control menues" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label font-weight-bold">Access</label>
+                                <input name="userAccess" value="" class="form-control menues" />
+                            </div>
+                        </div>
+
+                        <!--STATUS-->
+                        <div class="container-fluid" id="status">
+                            <h2 class="mt-4">Status</h2>
+                            <p>Status: <span id="selectedUserStatus" class="text-danger"></span></p>
+                        </div>
+                    </div>
+
+                    @*<div class="form-group">
+                    <button class="btn btn-primary" type="submit">Save Changes</button>
+                </div>*@
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        //Hide all the areas
+        $('.areas').children().hide();
+        $('#users').show();
+
+        $('.bmenu').click(function (event) {
+            SelectAdminMenu(event.target.id.substr(1));
+        });
+    });
+
+    function SelectAdminMenu(id) {
+        $('.areas').children().hide();
+        $('#' + id).toggle(300);
+    }
+
+
+    let sel = document.getElementById('selectedUserShow');
+    let list = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.listOfUsers));
+
+    function SelectUser(id) {
+
+        for (var i = 0; i < list.length; i++) {
+            if (list[i][3] == id) {
+                sel.innerText = list[i][0];
+                //User
+                document.getElementById('selectedUserHidden').innerHTML = list[i][3];
+                //Action
+                document.getElementById('selectedUserAction').innerHTML = list[i][0];
+                //Overview
+                document.getElementById('selectedUserOverview').innerHTML = list[i][0];
+                //Status
+                document.getElementById('selectedUserStatus').innerHTML = list[i][0];
+
+                let men = document.getElementsByClassName('menues');
+                
+                men.userName.value = list[i][0];
+                men.userEmail.value = list[i][1];
+                men.userPhone.value = list[i][2];
+
+                men.userID.value = list[i][3];
+                men.userID.readOnly = true;
+
+                
+                if (list[i][4] == 'true') {
+                    men.userLock.checked = true;
+                } else {
+                    men.userLock.checked = false;
+                }
+
+                men.userAccess.value = list[i][5];
+                men.userAccess.readOnly = true;
+
+                if (list[i][6] == 'true') {
+                    men.userPassReset.checked = true;
+                } else {
+                    men.userPassReset.checked = false;
+                }
+            }
+        }
+    }
+
+    function ResetToTemporal() {
+        let text = document.getElementById('temporal');
+        text.innerHTML = text.innerText + '<span class="text-danger">: Provide the user with password "temporal"</span>';
+    }
+
+</script>
+
+<style>
+    /* The switch - the box around the slider */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    /* The slider */
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+        .slider.round:before {
+            border-radius: 50%;
+        } 
+</style>

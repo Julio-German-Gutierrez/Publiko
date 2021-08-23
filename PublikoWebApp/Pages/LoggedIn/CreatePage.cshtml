@@ -1,0 +1,65 @@
+﻿@page 
+
+@inject Microsoft.AspNetCore.Identity.UserManager<IdentityUser> _userManager
+
+@model PublikoWebApp.Pages.LoggedIn.CreatePageModel
+@{
+}
+
+<div style="height:100vh; background-color:rgb(220,220,220)">
+    <div class="container pt-5" style="height:inherit; background-color:rgb(235,235,235)">
+        <h2>New Page</h2>
+        <hr />
+
+        <div class="row">
+            <div class="col-lg-2 col-md-1 col-sm"></div>
+            <div class="col-lg-10 col-md-11 col-sm-12">
+                <form asp-action="OnPostAsync" method="post">
+
+                    <div class="row">
+                        <div class="form-group col-8">
+                            <label class="control-label font-weight-bold">Page Title <span style="font-size:smaller;font-weight:normal">(max 12 char.)</span></label>
+                            <input asp-for="PageTitle" class="form-control" />
+                            <span asp-validation-for="PageTitle" class="text-danger"></span>
+                        </div>
+                        <div class="form-group col-4">
+                            <label class="control-label font-weight-bold">Order</label>
+                            <input asp-for="PageOrder" value="@Model.AmountPages" class="form-control" />
+                            <span asp-validation-for="PageOrder" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label font-weight-bold">Page Content</label>
+                        <div class="bg-white"><textarea id="summernote" class="form-control text-break" asp-for="PageBody" rows="20"></textarea></div> <!-- Corregir NEWLINES -->
+                        <div hidden>Antal bokstäver kvar: <span id="IFCounter"></span></div>
+                        <span asp-validation-for="PageBody" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group" style="height:100px">
+                        <input type="submit" value="Create" class="btn btn-primary font-weight-bold" />
+                        <a asp-page="MyStart" class="btn btn-danger font-weight-bold">Cancel</a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts{
+    <!-- include summernote css/js -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#summernote').summernote({
+                height: 500,                 // set editor height
+                minHeight: 500,             // set minimum height of editor
+                maxHeight: 500,             // set maximum height of editor
+                //focus: true                  // set focus to editable area after initializing summernote
+            });
+        });
+    </script>
+}

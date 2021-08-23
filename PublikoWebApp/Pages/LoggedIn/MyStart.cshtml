@@ -1,121 +1,203 @@
 ﻿@page
 @model PublikoWebApp.Pages.LoggedIn.MyStartModel
-@using System.Diagnostics;
-@using System.Threading;
 
 @{
-    Trace.WriteLine("Start webmodel");
-
-    //while (Model.Pages == null)
-    //{
-    //    Thread.Sleep(100);
-    //}
+    int newPageOrder = Model.Pages.Count + 1;
 }
 
 
 <div hidden style="height:80px;background-color:brown"></div>
 
 <!--Banner image-->
-<div>
-    <img hidden src="#" alt="Banner-image" />
-    <div style="height:200px;background-color:cornflowerblue"></div>
+<div style="background-color: cornflowerblue">
+    <img hidden src="/assets/img/banner.jpg" alt="Banner-image" />
+    <div class="container p-0 overflow-hidden" style="height:200px;position:relative">
+        <img class="img-fluid" src="/assets/img/banner.jpg" width="100%" alt="Banner-image" />
+
+        <!---->
+        <div class="">
+            <a href="#" style="position:absolute;bottom:10px;right:10px;color:white">[+]</a>
+        </div>
+    </div>
 </div>
 
 <!--User menu bar-->
-<div class="bg-dark">
-    <nav class="container navbar">
-        <div class="float-left">
-            <a class="pr-3 text-white" href="#" >Welcome Page</a>
-            <a class="pr-3 text-white" href="#">[+]</a>
-        </div>
-    </nav>
-</div>
+<div style="background-color:rgb(220,220,220)">
+    <div class="bg-dark">
+        <nav class="container navbar">
+            <div class="float-left">
 
-<div class="container">
-    <div>
-        <h4 class="pt-3">Welcome</h4>
-        <h1>@Model.Pages[0].PageTitle</h1>
-        <hr />
-        @foreach (string block in Model.Pages[0].PageBody.Split('\n'))
+                <a class="pr-3 text-white" href="#" onclick="ChangePage('myposts')">My Posts</a>
+
+                @if (Model.Pages.Count > 0)
+                {
+                    foreach (var p in Model.Pages.OrderBy(p => p.PageOrder).ToList())
+                    {
+                        <a class="pr-3 text-white" href="#" onclick="ChangePage('@p.PageTitle')">@p.PageTitle</a>
+                    }
+
+                }
+
+                @if (Model.Pages.Count < 5)
+                {
+                    <a class="pr-3 text-white" asp-page="CreatePage" asp-route-pages="@newPageOrder">[+]</a>
+                }
+                <!--Provisional counter-->
+                <a hidden class="pr-3 text-white">Number of visitors: @Model.ViewsNumber</a>
+            </div>
+        </nav>
+    </div>
+
+    <div class="container pl-5 pr-5" style="background-color:rgb(235,235,235)">
+        <div class="flippers" id="myposts">
+            <h2 class="pt-3">My Articles</h2>
+
+            <div class="btn btn-primary font-weight-bold">
+                <a class="text-white" asp-page="CreatePost">New Post</a>
+            </div>
+
+            <hr />
+
+            @if (Model.Posts.Count > 0)
+            {
+                <div class="row">
+                    <div class="col-lg-2 col-md-1 col-sm"></div>
+                    <div class="col-lg-10 col-md-11 col-sm-12 overflow-hidden">
+                        @foreach (var post in Model.Posts.OrderByDescending(p => p.PostDateCreated).ToList())
+                        {
+                            <h3>@post.PostTitle</h3>
+                            <span class="text-black-50 font-italic" style="font-size:smaller">Updated: @post.PostDateModified.ToString("M")</span>
+                            <hr />
+
+                            <div class="pb-4">
+                                @Html.Raw(post.PostContent)
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <a hidden class="text-black-50" asp-page="EditPost" asp-route-id="@post.PostID">[Edit]</a>
+                                <div>
+                                    <a class="text-black-50" asp-page="EditPost" asp-route-id="@post.PostID">[Edit]</a>
+                                    <a class="text-danger" href="#" onclick="DeletePost('@post.PostID')">[Delete]</a>
+                                </div>
+                                <span>By: @User.Identity.Name</span>
+                            </div>
+
+
+                            <hr style="border:solid;color:rgba(1,1,1,0.5)" />
+                        }
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        @foreach (var p in Model.Pages.OrderBy(p => p.PageOrder).ToList())
         {
-            <p>@block</p>
+            <div hidden class="flippers overflow-hidden" id="@p.PageTitle">
+                <h2 class="pt-3">@p.PageTitle</h2>
+
+                <div>
+                    <a class="text-black-50" asp-page="EditPage" asp-route-id="@p.PageID">[Edit Page]</a>
+                    <a class="text-danger" href="#" onclick="DeletePage('@p.PageID')">[Delete Page]</a>
+                </div>
+
+                <hr />
+
+                <div class="container p-lg-5 p-md-3 p-sm-1">
+                    @Html.Raw(p.PageBody)
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a class="text-black-50 font-italic" style="font-size:smaller">Updated: @p.PageDateUpdated.ToString("M")</a>
+                    <span>By: @User.Identity.Name</span>
+                </div>
+            </div>
         }
 
-        <p align="right">
-            By: @User.Identity.Name
-        </p>
+        <div style=""></div>
     </div>
 </div>
-
-@*<div>
-    @if (User.IsInRole("Super user") || User.IsInRole("Admin") || User.IsInRole("Owner"))
-    {
-        <a asp-action="Edit" asp-route-id="@Model.BulletinID" class="btn btn-primary font-weight-bold">Redigera</a>
-    }
-    <a asp-action="Index" class="btn btn-secondary font-weight-bold">Tillbaka till Listan</a>
-</div>*@
-
-
-
-
-<!--<div class="container d-flex" id="wrapper">-->
-<!-- Sidebar-->
-<!--<div class="border-end bg-white" id="sidebar-wrapper">
-    <div hidden class="sidebar-heading border-bottom bg-light">Menu</div>
-    <div class="list-group list-group-flush">
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!" onclick="MenuSelect('myPostsID')">My Posts</a>
-        <a hidden class="list-group-item list-group-item-action list-group-item-light p-3" href="#!" onclick="MenuSelect('editID')">Edit</a>
-        <a class="list-group-item list-group-item-action list-group-item-light p-3" href="#!" onclick="MenuSelect('statisticsID')">Statistics</a>
-    </div>
-</div>-->
-<!-- Page content wrapper-->
-<!--<div id="page-content-wrapper">-->
-<!-- Page content-->
-<!--<div hidden class="container-fluid">
-    <h1 class="mt-4">Simple Sidebar</h1>
-    <p>The starting state of the menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will change.</p>
-    <p>
-        Make sure to keep all page content within the
-        <code>#page-content-wrapper</code>
-        . The top navbar is optional, and just for demonstration. Just create an element with the
-        <code>#sidebarToggle</code>
-        ID which will toggle the menu when clicked.
-    </p>
-</div>-->
-<!--Welcome-->
-<!--<div id="welcomeID" class="container">
-    <h1>Welcome to your site!</h1>
-</div>-->
-<!--My Pages-->
-<!--<div id="myPostsID" hidden>
-    <partial name="_MyPosts" />
-</div>-->
-<!--Edit-->
-<!--<div id="editID" class="container" hidden>
-    <h1>Edit</h1>
-</div>-->
-<!--Statistics-->
-<!--<div id="statisticsID" class="container" hidden>
-            <h1>Statistics</h1>
-        </div>
-
-    </div>
-</div>-->
-<!-- Core theme JS-->
-<!--<script src="js/scripts_simple_side_bar.js"></script>
 
 <script type="text/javascript">
-    let IDs = ['welcomeID', 'myPostsID', 'editID', 'statisticsID'];
 
-    function MenuSelect(id) {
-        for (let i = 0; i < IDs.length; i++) {
-            let IDtag = document.getElementById(IDs[i])
-            if (IDtag.id != id) {
-                IDtag.hidden = true;
-            }
-            else {
-                IDtag.hidden = false;
+    function DeletePage(id) {
+
+        let response = confirm("Are you sure that you want to delete this Page?")
+
+        /*
+         * Function partially working. It deletes the page but Ajax return error.
+         * I am refreshing the page by doing it inside the error section.
+         */
+        if (response) {
+            console.log("Inside IF on DeletePage()")
+            $.ajax({
+                type: "GET",
+                url: "https://localhost:5001/api/deletepage/" + id,
+                //contentType: "application/json; charset=utf-8",
+                //dataType: "jsonp",
+                success: function (result) {
+                    console.log("success");
+                    window.location.reload(true);
+                }, //End of AJAX Success function
+
+                //failure: function (data) {
+                //    console.log("Failure: " + data.responseText);
+                //    window.location.reload(true);
+                //}, //End of AJAX failure function
+                error: function (xhr) {
+                    console.log("Error: MyStart->-JAVASCRIPT:DeletePage(id)->ajax->error");
+                    window.location.reload(true);
+                } //End of AJAX error function
+
+            });
+        }
+    }
+
+
+    function DeletePost(id) {
+
+        let response = confirm("Are you sure that you want to delete this Post?")
+
+        /*
+         * Function partially working. It deletes the page but Ajax return error.
+         * I am refreshing the page by doing it inside the error section.
+         */
+        if (response) {
+            console.log("Inside IF on DeletePost()")
+            $.ajax({
+                type: "GET",
+                url: "https://localhost:5001/api/deletepost/" + id,
+                contentType: "application/json; charset=utf-8",
+                dataType: "jsonp",
+                success: function (data) {
+                    console.log("success" + data.responseText);
+                    window.location.reload(true);
+                }, //End of AJAX Success function
+
+                failure: function (data) {
+                    console.log("Failure: " + data.responseText);
+                    window.location.reload(true);
+                }, //End of AJAX failure function
+                error: function (data) {
+                    console.log("Error: MyStart->-JAVASCRIPT:DeletePost(id)->ajax->error");
+                    window.location.reload(true);
+                } //End of AJAX error function
+
+            });
+        }
+    }
+
+
+    function ChangePage(id) {
+        let divElements = document.getElementsByClassName("flippers");
+
+        for (var i = 0; i < divElements.length; i++) {
+            if (divElements[i].id == id) {
+                divElements[i].hidden = false;
+            } else {
+                divElements[i].hidden = true;
             }
         }
     }
-</script>-->
+
+</script>

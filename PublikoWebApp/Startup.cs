@@ -9,10 +9,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using PublikoWebApp.Data;
 using PublikoWebApp.Services;
+using PublikoSharedLibrary.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace PublikoWebApp
 {
@@ -28,16 +30,28 @@ namespace PublikoWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //GDPR
+            services.Configure<CookiePolicyOptions>(options =>
+            {
+                // This lambda determines whether user consent for non-essential 
+                // cookies is needed for a given request.
+                options.CheckConsentNeeded = context => true;
+                // requires using Microsoft.AspNetCore.Http;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
             services.AddDbContext<PublikoIdentityDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("IdentityConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<PublikoIdentityDbContext>();
 
             services.AddHttpClient();
 
             //START Added by me.
+
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -73,9 +87,17 @@ namespace PublikoWebApp
 
             //Own Services
             services.AddSingleton<IStoredPagesService, StoredPagesService>();
+            services.AddSingleton<IGlobalIDServices, GlobalIDServices>();
 
             services.AddRazorPages();
             services.AddRazorPages().AddRazorRuntimeCompilation();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdministratorAccess", policy =>
+                policy.RequireRole("Admin")
+                );
+            });
 
         }
 
@@ -97,6 +119,7 @@ namespace PublikoWebApp
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseCookiePolicy();
 
             app.UseRouting();
 

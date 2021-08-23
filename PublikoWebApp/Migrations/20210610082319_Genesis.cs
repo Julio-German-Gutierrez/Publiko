@@ -152,6 +152,36 @@ namespace PublikoWebApp.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            //Added by Ger
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "UserName", "NormalizedUserName", "Email","NormalizedEmail","EmailConfirmed", "PasswordHash", "SecurityStamp", "ConcurrencyStamp", "PhoneNumber", "PhoneNumberConfirmed", "TwoFactorEnabled", "LockoutEnd", "LockoutEnabled", "AccessFailedCount" },
+                values: new object[,]
+                {
+                    { "605ad860-4a7c-4a63-821e-09f0af97476e", "Elber Galarga", "ELBER GALARGA", "miscelaneas.familia@gmail.com", "MISCELANEAS.FAMILIA@GMAIL.COM", true, "AQAAAAEAACcQAAAAECR3V4MbgNT7vDX3onKgeRC56Bi4w1AkE0fSWtPnHC1auBe4bjkhMwxIDadVp59kOg==", "LXPS2UOMBPNY6MYIJOHSCITMQ56MCBEV", "2ef3729a-187b-4570-8907-54a715916570", null, false, false, null, true, 0 },
+                    { "d6dffbfa-961b-4522-b5d8-43c9e015ab93", "Administrator", "ADMINISTRATOR", "administrator@administrator.com", "ADMINISTRATOR@ADMINISTRATOR.COM", true, "AQAAAAEAACcQAAAAEG6yOFaxYV3AuI3EkozQOjyrSRrphwvRF1NNpNyubQVN9w5ynC6zZGpZCR3CZiAIxA==", "IAXWYRONBJVJA45GHTIVG62GGKSVERPD", "cd16a94a-8a25-4797-8100-3bc456aa609c", null, false, false, null, true, 0 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "d620577c-7da0-4402-ba85-d4ff973026ef", "f5997145-a0c6-4826-8456-3337a3e64673", "Admin", "ADMIN" },
+                    { "a18be9c0-aa65-4af8-bd17-00bd9344e575", "e3f883e8-913c-4679-a963-f675b10538b0", "User", "USER" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "UserId", "RoleId" },
+                values: new object[,]
+                {
+                    { "d6dffbfa-961b-4522-b5d8-43c9e015ab93", "d620577c-7da0-4402-ba85-d4ff973026ef" }, //Admin
+                    { "605ad860-4a7c-4a63-821e-09f0af97476e", "a18be9c0-aa65-4af8-bd17-00bd9344e575" }    //User
+                });
+            //Added by Ger
+
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
