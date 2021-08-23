@@ -1,0 +1,104 @@
+﻿@page "{websiteName}"
+@model PublikoWebApp.Pages.SpacesModel
+@{
+}
+
+<div hidden style="height:80px;background-color:brown"></div>
+
+<!--Banner image-->
+<div style="background-color: cornflowerblue">
+    <img hidden src="/assets/img/banner.jpg" alt="Banner-image" />
+    <div class="container p-0 overflow-hidden" style="height:200px;position:relative">
+        <img class="img-fluid" src="/assets/img/banner.jpg" width="100%" alt="Banner-image" />
+
+        <!---->
+        <div class="">
+            <a href="#" style="position:absolute;bottom:10px;right:10px;color:white">[+]</a>
+        </div>
+    </div>
+</div>
+
+<!--User menu bar-->
+<div style="background-color:rgb(220,220,220)">
+    <div class="bg-dark">
+        <nav class="container navbar">
+            <div class="float-left">
+
+                <a class="pr-3 text-white" href="#" onclick="ChangePage('myposts')">Articles</a>
+
+                @if (Model.Pages.Count > 0)
+                {
+                    foreach (var p in Model.Pages.OrderBy(p => p.PageOrder).ToList())
+                    {
+                        <a class="pr-3 text-white" href="#" onclick="ChangePage('@p.PageTitle')">@p.PageTitle</a>
+                    }
+
+                }
+            </div>
+        </nav>
+    </div>
+
+    <div class="container pl-5 pr-5" style="background-color:rgb(235,235,235)">
+        <div class="flippers" id="myposts">
+            <h2 class="pt-3">My Posts</h2>
+
+            @if (Model.Posts.Count > 0)
+            {
+                <div class="row">
+                    <div class="col-lg-2 col-md-1 col-sm"></div>
+                    <div class="col-lg-10 col-md-11 col-sm-12 overflow-hidden">
+                        @foreach (var post in Model.Posts.OrderByDescending(p => p.PostDateCreated).ToList())
+                        {
+                            <h3>@post.PostTitle</h3>
+                            <span class="text-black-50 font-italic" style="font-size:smaller">Updated: @post.PostDateModified.ToString("M")</span>
+                            <hr />
+
+                            <div class="pb-4">
+                                @Html.Raw(post.PostContent)
+                            </div>
+
+                            <hr style="border:solid;color:rgba(1,1,1,0.5)" />
+                        }
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        @foreach (var p in Model.Pages.OrderBy(p => p.PageOrder).ToList())
+        {
+            <div hidden class="flippers overflow-hidden" id="@p.PageTitle">
+                <h2 class="pt-3">@p.PageTitle</h2>
+
+                <hr />
+
+                <div class="container p-lg-5 p-md-3 p-sm-1">
+                    @Html.Raw(p.PageBody)
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a class="text-black-50 font-italic" style="font-size:smaller">Updated: @p.PageDateUpdated.ToString("M")</a>
+                    <span>By: @User.Identity.Name</span>
+                </div>
+            </div>
+        }
+
+        <div style=""></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function ChangePage(id) {
+        let divElements = document.getElementsByClassName("flippers");
+
+        for (var i = 0; i < divElements.length; i++) {
+            if (divElements[i].id == id) {
+                divElements[i].hidden = false;
+            } else {
+                divElements[i].hidden = true;
+            }
+        }
+    }
+
+</script>
