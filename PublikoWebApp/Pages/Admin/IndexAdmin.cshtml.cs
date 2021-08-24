@@ -63,16 +63,15 @@ namespace PublikoWebApp.Pages.Admin
                 u.Add(item[4]);//lockdate
 
                 //item 5
-                foreach (var e in lRoles)
+                var sel = lRoles.FirstOrDefault(r => r.Id == item[3]);
+                if (sel != null)
                 {
-                    if (item[3] == e.Id)
-                    {
-                        u.Add("User");//access (item 5)
-                    }
-                    else
-                    {
-                        u.Add("Admin");//access (item 5)
-                    }
+                    u.Add("User");
+                }
+                else
+                {
+                    u.Add("Admin");
+
                 }
 
                 var userSelected = _userManager.Users.FirstOrDefault(i => i.Id == selUser.Userid);
@@ -94,8 +93,19 @@ namespace PublikoWebApp.Pages.Admin
         }
 
         //userLock returns "on"/null
-        public async Task<IActionResult> OnPost(string userName, string userEmail, string userPhone, string userID, string userLock, string userAccess, string userPassReset, string userWebSite)
+        public async Task<IActionResult> OnPost(string userName, string userEmail, string userPhone, string userID, string userLock, string userAccess, string userPassReset, string userWebSite, string userDelete)
         {
+            var userSelected = _userManager.Users.FirstOrDefault(i => i.Id == selUser.Userid);
+
+            if (userDelete == "on")
+            {
+                await _userManager.DeleteAsync(userSelected);
+
+                await SetPageAsync();
+
+                return Page();
+            }
+
             selUser.UserName = userName;
             selUser.UserEmail = userEmail;
             selUser.UserPhone = userPhone;
@@ -118,9 +128,6 @@ namespace PublikoWebApp.Pages.Admin
                 selUser.UserPassReset = false;
             }
             selUser.UserWebSite = userWebSite;
-
-
-            var userSelected = _userManager.Users.FirstOrDefault(i => i.Id == selUser.Userid);
             
             //Lock Account
             if (selUser.UserLock)
@@ -147,14 +154,7 @@ namespace PublikoWebApp.Pages.Admin
                 selUser.UserPassReset = false;
             }
 
-            
-
-            //await _userManager.SetEmailAsync(userSelected, selUser.UserEmail);
-            //await _userManager.SetPhoneNumberAsync(userSelected, selUser.UserPhone);
-            //await _userManager.SetUserNameAsync(userSelected, selUser.UserName);
-
             await _userManager.UpdateAsync(userSelected);
-            //_userManager.
 
             await SetPageAsync();
 

@@ -28,11 +28,13 @@ namespace PublikoWebApp.Areas.Identity.Pages.Account
         public RegisterModel(
             UserManager<PublikoUser> userManager,
             SignInManager<PublikoUser> signInManager,
+            RoleManager<IdentityRole> roleManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _logger = logger;
             _emailSender = emailSender;
         }
@@ -43,6 +45,7 @@ namespace PublikoWebApp.Areas.Identity.Pages.Account
         public string ReturnUrl { get; set; }
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
+        public RoleManager<IdentityRole> _roleManager { get; }
 
         public class InputModel
         {
@@ -107,6 +110,8 @@ namespace PublikoWebApp.Areas.Identity.Pages.Account
                     }
                     else
                     {
+                        await _userManager.RemoveFromRoleAsync(user,"Admin");
+                        await _userManager.AddToRoleAsync(user, "User");
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }

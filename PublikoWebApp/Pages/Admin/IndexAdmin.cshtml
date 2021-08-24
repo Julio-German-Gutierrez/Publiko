@@ -27,7 +27,7 @@
                 <!-- Page content-->
                 <form method="post">
                     <div class="form-group d-flex justify-content-end" style="padding:15px">
-                        <button class="btn btn-danger" type="submit">Save Changes</button>
+                        <button class="btn btn-danger" id="saveButton" type="submit">Save Changes</button>
                     </div>
 
                     <!--USERS-->
@@ -91,7 +91,7 @@
                                     <tr>
                                         <td>
                                             <div class="d-flex justify-content-between">
-                                                <div id="temporal">Reset Password</div>
+                                                <div id="temporal">Reset password</div>
                                                 <div>
                                                     <label class="switch">
                                                         <input name="userPassReset" type="checkbox" onclick="ResetToTemporal()" class="menues">
@@ -101,6 +101,23 @@
                                             </div>
                                         </td>
                                     </tr>
+
+                                    <!--DELETE ACCOUNT-->
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex justify-content-between">
+                                                <div>Terminate account</div>
+                                                <div>
+                                                    <label class="switch">
+                                                        <input name="userDelete" type="checkbox" class="menues del" onclick="deleteAccount()">
+                                                        <span class="slider round"></span>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <!--END DELETE ACCOUNT-->
+
                                 </table>
                             </div>
 
@@ -145,10 +162,6 @@
                             <p>Status: <span id="selectedUserStatus" class="text-danger"></span></p>
                         </div>
                     </div>
-
-                    @*<div class="form-group">
-                    <button class="btn btn-primary" type="submit">Save Changes</button>
-                </div>*@
                 </form>
             </div>
 
@@ -221,7 +234,21 @@
 
     function ResetToTemporal() {
         let text = document.getElementById('temporal');
-        text.innerHTML = text.innerText + '<span class="text-danger">: Provide the user with password "temporal"</span>';
+        if (text.innerText == 'Reset password') {
+            text.innerHTML = 'Reset password: <span class="text-danger">Provide the user with password "temporal"</span>';
+        } else {
+            text.innerHTML = 'Reset password';
+        }
+    }
+
+    function deleteAccount() {
+        let del = document.getElementById('saveButton');
+        if (del.innerText == 'DELETE ACCOUNT') {
+            del.innerText = 'Save Changes';
+        } else {
+            del.innerText = 'DELETE ACCOUNT';
+        }
+        
     }
 
 </script>
@@ -269,6 +296,10 @@
 
     input:checked + .slider {
         background-color: #2196F3;
+    }
+
+    input.del:checked + .slider {
+        background-color: red;
     }
 
     input:focus + .slider {
