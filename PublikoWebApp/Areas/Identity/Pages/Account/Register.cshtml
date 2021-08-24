@@ -25,6 +25,14 @@
                         <input asp-for="Input.Email" class="form-control" />
                         <span asp-validation-for="Input.Email" class="text-danger"></span>
                     </div>
+
+                    <!--Added property-->
+                    <div class="form-group">
+                        <label asp-for="Input.WebSiteName"></label>
+                        <input asp-for="Input.WebSiteName" class="form-control" />
+                        <span asp-validation-for="Input.WebSiteName" class="text-danger"></span>
+                    </div>
+                    
                     <div class="form-group">
                         <label asp-for="Input.Password"></label>
                         <input asp-for="Input.Password" class="form-control" />

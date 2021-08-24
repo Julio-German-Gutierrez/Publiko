@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PublikoSharedLibrary.Models;
+using PublikoWebApp.Data;
 using PublikoWebApp.Services;
 
 namespace PublikoWebApp.Pages.LoggedIn
@@ -20,14 +21,14 @@ namespace PublikoWebApp.Pages.LoggedIn
         public int PageOrder { get; set; }
         public int AmountPages { get; set; }
 
-        public CreatePageModel(IStoredPagesService storedPagesService, UserManager<IdentityUser> userManager)
+        public CreatePageModel(IStoredPagesService storedPagesService, UserManager<PublikoUser> userManager)
         {
             _storedPagesService = storedPagesService;
             _userManager = userManager;
         }
 
         public IStoredPagesService _storedPagesService { get; }
-        public UserManager<IdentityUser> _userManager { get; }
+        public UserManager<PublikoUser> _userManager { get; }
 
         public void OnGet(int pages)
         {

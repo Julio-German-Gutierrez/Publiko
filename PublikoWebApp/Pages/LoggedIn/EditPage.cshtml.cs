@@ -8,6 +8,7 @@ using PublikoWebApp.Services;
 using PublikoSharedLibrary.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json;
+using PublikoWebApp.Data;
 
 namespace PublikoWebApp.Pages.LoggedIn
 {
@@ -17,8 +18,8 @@ namespace PublikoWebApp.Pages.LoggedIn
         public WebPage EditPage { get; set; }
 
         public IStoredPagesService _storedPagesService { get; set; }
-        public UserManager<IdentityUser> _userManager { get; set; }
-        public EditPageModel(IStoredPagesService storedPagesService, UserManager<IdentityUser> userManager)
+        public UserManager<PublikoUser> _userManager { get; set; }
+        public EditPageModel(IStoredPagesService storedPagesService, UserManager<PublikoUser> userManager)
         {
             _storedPagesService = storedPagesService;
             _userManager = userManager;

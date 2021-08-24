@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using PublikoWebApp.Data;
 
 namespace PublikoWebApp.Pages.Admin
 {
@@ -16,14 +17,14 @@ namespace PublikoWebApp.Pages.Admin
         [BindProperty]
         public SelectedUser selUser { get; set; } = new SelectedUser();
         
-        public IndexAdminModel(UserManager<IdentityUser> userManager,
+        public IndexAdminModel(UserManager<PublikoUser> userManager,
                                RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
         }
         public RoleManager<IdentityRole> _roleManager { get; set; }
-        public UserManager<IdentityUser> _userManager { get; }
+        public UserManager<PublikoUser> _userManager { get; }
 
         public class SelectedUser
         {
@@ -34,6 +35,7 @@ namespace PublikoWebApp.Pages.Admin
             public string UserAccess { get; set; }
             public bool UserLock { get; set; }
             public bool UserPassReset { get; set; }
+            public string UserWebSite { get; set; }
         }
 
 
@@ -46,7 +48,7 @@ namespace PublikoWebApp.Pages.Admin
         {
             var lUsers = _userManager.Users
                 .OrderBy(u => u.UserName)
-                .Select(u => new[] { u.UserName, u.Email, u.PhoneNumber, u.Id, (u.LockoutEnd != null) ? "true" : "false", u.PasswordHash })
+                .Select(u => new[] { u.UserName, u.Email, u.PhoneNumber, u.Id, (u.LockoutEnd != null) ? "true" : "false", u.PasswordHash, u.WebSiteName } )
                 .ToList();
 
             var lRoles = await _userManager.GetUsersInRoleAsync("User");
@@ -84,13 +86,15 @@ namespace PublikoWebApp.Pages.Admin
                     u.Add("false");
                 }
 
+                u.Add(item[6]);//websitename
+
 
                 listOfUsers.Add(u);
             }
         }
 
         //userLock returns "on"/null
-        public async Task<IActionResult> OnPost(string userName, string userEmail, string userPhone, string userID, string userLock, string userAccess, string userPassReset)
+        public async Task<IActionResult> OnPost(string userName, string userEmail, string userPhone, string userID, string userLock, string userAccess, string userPassReset, string userWebSite)
         {
             selUser.UserName = userName;
             selUser.UserEmail = userEmail;
@@ -113,6 +117,7 @@ namespace PublikoWebApp.Pages.Admin
             {
                 selUser.UserPassReset = false;
             }
+            selUser.UserWebSite = userWebSite;
 
 
             var userSelected = _userManager.Users.FirstOrDefault(i => i.Id == selUser.Userid);
@@ -120,12 +125,19 @@ namespace PublikoWebApp.Pages.Admin
             //Lock Account
             if (selUser.UserLock)
             {
-                await _userManager.SetLockoutEndDateAsync(userSelected, DateTime.Now.AddDays(1));
+                //await _userManager.SetLockoutEndDateAsync(userSelected, DateTime.Now.AddDays(1));
+                userSelected.LockoutEnd = DateTime.Now.AddDays(1);
             }
             else
             {
-                await _userManager.SetLockoutEndDateAsync(userSelected, null);
+                //await _userManager.SetLockoutEndDateAsync(userSelected, null);
+                userSelected.LockoutEnd = null;
             }
+
+            userSelected.Email = selUser.UserEmail;
+            userSelected.PhoneNumber = selUser.UserPhone;
+            userSelected.UserName = selUser.UserName;
+            userSelected.WebSiteName = selUser.UserWebSite;
 
             //Pass Reset
             if (selUser.UserPassReset)
@@ -135,9 +147,14 @@ namespace PublikoWebApp.Pages.Admin
                 selUser.UserPassReset = false;
             }
 
-            await _userManager.SetEmailAsync(userSelected, selUser.UserEmail);
-            await _userManager.SetPhoneNumberAsync(userSelected, selUser.UserPhone);
-            await _userManager.SetUserNameAsync(userSelected, selUser.UserName);
+            
+
+            //await _userManager.SetEmailAsync(userSelected, selUser.UserEmail);
+            //await _userManager.SetPhoneNumberAsync(userSelected, selUser.UserPhone);
+            //await _userManager.SetUserNameAsync(userSelected, selUser.UserName);
+
+            await _userManager.UpdateAsync(userSelected);
+            //_userManager.
 
             await SetPageAsync();
 

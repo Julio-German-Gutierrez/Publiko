@@ -9,6 +9,7 @@ using PublikoWebApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json;
+using PublikoWebApp.Data;
 
 namespace PublikoWebApp.Pages.LoggedIn
 {
@@ -16,13 +17,13 @@ namespace PublikoWebApp.Pages.LoggedIn
     {
         [BindProperty]
         public WebPost ToEditPost { get; set; }
-        public EditPostModel(IStoredPagesService storedPagesService, UserManager<IdentityUser> userManager)
+        public EditPostModel(IStoredPagesService storedPagesService, UserManager<PublikoUser> userManager)
         {
             _storedPagesService = storedPagesService;
             _userManager = userManager;
         }
         public IStoredPagesService _storedPagesService { get; set; }
-        public UserManager<IdentityUser> _userManager { get; set; }
+        public UserManager<PublikoUser> _userManager { get; set; }
 
         public async Task OnGet(string id)
         {

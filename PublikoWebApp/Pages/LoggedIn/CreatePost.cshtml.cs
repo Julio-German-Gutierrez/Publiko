@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using PublikoWebApp.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using PublikoWebApp.Data;
 
 /*
 public string PostID { get; set; }
@@ -28,14 +29,14 @@ namespace PublikoWebApp.Pages.LoggedIn
         [BindProperty]
         public string PostContent { get; set; }
 
-        public CreatePostModel(IStoredPagesService storedPagesService, UserManager<IdentityUser> userManager)
+        public CreatePostModel(IStoredPagesService storedPagesService, UserManager<PublikoUser> userManager)
         {
             _storedPagesService = storedPagesService;
             _userManager = userManager;
         }
 
         public IStoredPagesService _storedPagesService { get; }
-        public UserManager<IdentityUser> _userManager { get; }
+        public UserManager<PublikoUser> _userManager { get; }
 
         public void OnGet()
         {

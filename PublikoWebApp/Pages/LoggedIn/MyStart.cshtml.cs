@@ -13,6 +13,7 @@ using PublikoSharedLibrary.Models;
 
 using System.Diagnostics;
 using System.IO;
+using PublikoWebApp.Data;
 
 namespace PublikoWebApp.Pages.LoggedIn
 {
@@ -35,13 +36,13 @@ namespace PublikoWebApp.Pages.LoggedIn
         }
 
         //Constructor
-        public MyStartModel(UserManager<IdentityUser> userManager, IStoredPagesService storedPagesService)
+        public MyStartModel(UserManager<PublikoUser> userManager, IStoredPagesService storedPagesService)
         {
             _userManager = userManager;
             _pagesService = storedPagesService;
         }
 
-        public UserManager<IdentityUser> _userManager { get; }
+        public UserManager<PublikoUser> _userManager { get; }
         public IStoredPagesService _pagesService { get; }
 
 

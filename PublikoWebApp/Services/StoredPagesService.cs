@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using PublikoSharedLibrary.Models;
 using Microsoft.AspNetCore.Identity;
+using PublikoWebApp.Data;
 
 namespace PublikoWebApp.Services
 {
@@ -22,7 +23,7 @@ namespace PublikoWebApp.Services
         string baseURL = @"https://localhost:5001";
         
 
-        public async Task<string> GetPagesByAuthorIDAsync(string userID, IdentityUser userObject=null) //HttpResponseMessage
+        public async Task<string> GetPagesByAuthorIDAsync(string userID, PublikoUser userObject=null) //HttpResponseMessage
         {
             string searchByAuthorID = $"/api/author/{userID}/pages";
             string fullURL = baseURL + searchByAuthorID;
@@ -39,7 +40,7 @@ namespace PublikoWebApp.Services
             //else throw new Exception(response.ReasonPhrase);
         }
 
-        public async Task<string> GetPostsByAuthorIDAsync(string userID, IdentityUser userObject = null)
+        public async Task<string> GetPostsByAuthorIDAsync(string userID, PublikoUser userObject = null)
         {
             string searchByAuthorID = $"/api/author/{userID}/posts";
             string fullURL = baseURL + searchByAuthorID;
@@ -66,7 +67,7 @@ namespace PublikoWebApp.Services
 
 
 
-        public async Task<string> CreatePageAsync(string pageTitle, string pageBody, int? pageOrder, string userID, IdentityUser userObject)
+        public async Task<string> CreatePageAsync(string pageTitle, string pageBody, int? pageOrder, string userID, PublikoUser userObject)
         {
             if (pageTitle != null && pageBody != null && pageOrder != null && userID != null)
             {
@@ -85,7 +86,7 @@ namespace PublikoWebApp.Services
             return "ok";
         }
 
-        public async Task<string> CreatePostAsync(string uRLPostTitle, string uRLPostContent, string userID, IdentityUser userObject)
+        public async Task<string> CreatePostAsync(string uRLPostTitle, string uRLPostContent, string userID, PublikoUser userObject)
         {
             if (uRLPostTitle != null && uRLPostContent != null && userID != null)
             {
@@ -104,7 +105,7 @@ namespace PublikoWebApp.Services
             return "ok";
         }
 
-        public async Task<string> GetPageByIDAsync(string id, IdentityUser userObject)
+        public async Task<string> GetPageByIDAsync(string id, PublikoUser userObject)
         {
             string fullURL = baseURL + $"/api/page/{id}";
 
@@ -120,7 +121,7 @@ namespace PublikoWebApp.Services
             return "Error: StoredPagesService->GetPageByIDAsync()->if (response.IsSuccessStatusCode)";
         }
 
-        public async Task<string> EditPageAsync(string pageID, string pageTitle, string pageBody, int pageOrder, IdentityUser userObject)
+        public async Task<string> EditPageAsync(string pageID, string pageTitle, string pageBody, int pageOrder, PublikoUser userObject)
         {
             string URLPageTitle = System.Web.HttpUtility.UrlEncodeUnicode(pageTitle);
             string URLPageBody = System.Web.HttpUtility.UrlEncodeUnicode(pageBody);
@@ -142,7 +143,7 @@ namespace PublikoWebApp.Services
 
         }
 
-        public async Task<string> GetPostByIDAsync(string id, IdentityUser userObject)
+        public async Task<string> GetPostByIDAsync(string id, PublikoUser userObject)
         {
             string fullURL = baseURL + $"/api/post/{id}";
 
@@ -158,7 +159,7 @@ namespace PublikoWebApp.Services
             return "Error: StoredPagesService->GetPostByIDAsync()->if(response.IsSuccessStatusCode)";
         }
 
-        public async Task<string> EditPostAsync(string postID, string postTitle, string postContent, IdentityUser userObject)
+        public async Task<string> EditPostAsync(string postID, string postTitle, string postContent, PublikoUser userObject)
         {
             string URLPostTitle = System.Web.HttpUtility.UrlEncodeUnicode(postTitle);
             string URLPostContent = System.Web.HttpUtility.UrlEncodeUnicode(postContent);

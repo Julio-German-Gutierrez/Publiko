@@ -126,6 +126,10 @@
                                 <input name="userPhone" value="" class="form-control menues" />
                             </div>
                             <div class="form-group">
+                                <label class="control-label font-weight-bold">Website name</label>
+                                <input name="userWebSite" value="" class="form-control menues" />
+                            </div>
+                            <div hidden class="form-group">
                                 <label class="control-label font-weight-bold">Id</label>
                                 <input name="userID" value="" class="form-control menues" />
                             </div>
@@ -191,6 +195,7 @@
                 men.userName.value = list[i][0];
                 men.userEmail.value = list[i][1];
                 men.userPhone.value = list[i][2];
+                men.userWebSite.value = list[i][7]
 
                 men.userID.value = list[i][3];
                 men.userID.readOnly = true;

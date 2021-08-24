@@ -56,7 +56,10 @@
                             <div class="pb-4">
                                 @Html.Raw(post.PostContent)
                             </div>
-
+                            <div class="d-flex justify-content-between">
+                                <a class="text-black-50 font-italic" style="font-size:smaller">Updated: @post.PostDateModified.ToString("M")</a>
+                                <span>By: @Model.UserName</span>
+                            </div>
                             <hr style="border:solid;color:rgba(1,1,1,0.5)" />
                         }
                     </div>
@@ -78,7 +81,7 @@
 
                 <div class="d-flex justify-content-between">
                     <a class="text-black-50 font-italic" style="font-size:smaller">Updated: @p.PageDateUpdated.ToString("M")</a>
-                    <span>By: @User.Identity.Name</span>
+                    <span>By: @Model.UserName</span>
                 </div>
             </div>
         }

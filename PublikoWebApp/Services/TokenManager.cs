@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using PublikoWebApp.Data;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,7 +15,7 @@ namespace PublikoWebApp.Services
         private const string SECRET_KEY = "kdhfjksdhfjk89347589ueroghdfjklgh8954tyu9845hginrtgol856y7";
         public static readonly SymmetricSecurityKey SIGN_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
 
-        public static string GenerateJwtToken(IdentityUser user)
+        public static string GenerateJwtToken(PublikoUser user)
         {
             var credentials = new SigningCredentials(SIGN_KEY, SecurityAlgorithms.HmacSha256);
             var header = new JwtHeader(credentials);

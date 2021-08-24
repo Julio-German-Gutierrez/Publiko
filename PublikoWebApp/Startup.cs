@@ -44,7 +44,7 @@ namespace PublikoWebApp
                 options.UseSqlServer(
                     Configuration.GetConnectionString("IdentityConnection")));
             services.AddDatabaseDeveloperPageExceptionFilter();
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            services.AddDefaultIdentity<PublikoUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<PublikoIdentityDbContext>();
 

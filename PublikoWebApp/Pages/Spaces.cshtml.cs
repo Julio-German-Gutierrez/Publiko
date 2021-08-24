@@ -7,30 +7,33 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using PublikoSharedLibrary.Models;
+using PublikoWebApp.Data;
 using PublikoWebApp.Services;
 
 namespace PublikoWebApp.Pages
 {
     public class SpacesModel : PageModel
     {
+        public string UserName { get; set; }
         public List<WebPage> Pages { get; set; }
         public List<WebPost> Posts { get; set; }
 
         //Constructor
-        public SpacesModel(UserManager<IdentityUser> userManager, IStoredPagesService storedPagesService)
+        public SpacesModel(UserManager<PublikoUser> userManager, IStoredPagesService storedPagesService)
         {
             _userManager = userManager;
             _pagesService = storedPagesService;
         }
 
-        public UserManager<IdentityUser> _userManager { get; }
+        public UserManager<PublikoUser> _userManager { get; }
         public IStoredPagesService _pagesService { get; }
 
 
 
         public async Task OnGetAsync(string websiteName = null)
         {
-            var userObject = await _userManager.FindByNameAsync(websiteName);
+            var userObject = _userManager.Users.FirstOrDefault(u => u.WebSiteName == websiteName);
+            UserName = userObject.UserName;
 
             string message = await _pagesService
                 .GetPagesByAuthorIDAsync(userObject.Id, userObject);

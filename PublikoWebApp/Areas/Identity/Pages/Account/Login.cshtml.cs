@@ -11,20 +11,21 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using PublikoWebApp.Data;
 
 namespace PublikoWebApp.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class LoginModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<PublikoUser> _userManager;
+        private readonly SignInManager<PublikoUser> _signInManager;
         public RoleManager<IdentityRole> _roleManager { get; }
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<IdentityUser> signInManager, 
+        public LoginModel(SignInManager<PublikoUser> signInManager, 
             ILogger<LoginModel> logger,
-            UserManager<IdentityUser> userManager,
+            UserManager<PublikoUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
