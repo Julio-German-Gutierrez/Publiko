@@ -20,8 +20,9 @@ namespace PublikoWebApp.Services
 
         HttpClient _httpClient { get; }
 
-        string baseURL = @"https://localhost:5001";
-        
+        string baseURL = @"https://localhost:5001";  //@"https://localhost:5001";
+
+
 
         public async Task<string> GetPagesByAuthorIDAsync(string userID, PublikoUser userObject=null) //HttpResponseMessage
         {

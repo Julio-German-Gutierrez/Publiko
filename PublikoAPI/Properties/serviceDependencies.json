@@ -1,10 +1,9 @@
 {
   "dependencies": {
-    "mssql1": {
-      "type": "mssql",
-      "connectionId": "DefaultConnection"
+    "apis1": {
+      "type": "apis"
     },
-    "mssql2": {
+    "mssql1": {
       "type": "mssql",
       "connectionId": "ConnectionStrings:AzureConnection"
     }
