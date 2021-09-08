@@ -50,8 +50,8 @@ namespace PublikoAPI
                 jwtOptions.TokenValidationParameters = new TokenValidationParameters()
                 {
                     IssuerSigningKey = SIGN_KEY,
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
                     ValidIssuer = "https://localhost:44353/",
                     ValidAudience = "https://localhost:5001",
                     ValidateLifetime = true

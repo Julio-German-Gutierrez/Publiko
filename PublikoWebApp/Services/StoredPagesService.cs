@@ -11,6 +11,20 @@ using PublikoWebApp.Data;
 
 namespace PublikoWebApp.Services
 {
+    //Interface in the same file for the sake of simplicity.
+    public interface IStoredPagesService
+    {
+        Task<string> GetPagesByAuthorIDAsync(PublikoUser userObject); //HttpResponseMessage
+        Task<string> GetPostsByAuthorIDAsync(PublikoUser userObject); //HttpResponseMessage
+        Task<string> CreatePageAsync(string pageTitle, string pageBody, int? pageOrder, string userID, PublikoUser userObject);
+        Task<string> CreatePostAsync(string uRLPostTitle, string uRLPostContent, string userID, PublikoUser userObject);
+        Task<string> GetPageByIDAsync(string id, PublikoUser userObject);
+        Task<string> EditPageAsync(string pageID, string pageTitle, string pageBody, int pageOrder, PublikoUser userObject);
+        Task<string> GetPostByIDAsync(string id, PublikoUser userObject);
+        Task<string> EditPostAsync(string postID, string postTitle, string postContent, PublikoUser userObject);
+    }
+
+
     public class StoredPagesService : IStoredPagesService
     {
         public StoredPagesService(HttpClient httpClient)
@@ -20,13 +34,18 @@ namespace PublikoWebApp.Services
 
         HttpClient _httpClient { get; }
 
-        string baseURL = @"https://localhost:5001";  //@"https://localhost:5001";
+        //string baseURL = @"https://publikoapiapi.azure-api.net/";
+        string baseURL = @"https://localhost:5001";
 
 
-
-        public async Task<string> GetPagesByAuthorIDAsync(string userID, PublikoUser userObject=null) //HttpResponseMessage
+        /// <summary>
+        /// Get User Pages by ID 
+        /// </summary>
+        /// <param name="userObject">PublikoUser object. It inherits from IdentityUser.</param>
+        /// <returns></returns>
+        public async Task<string> GetPagesByAuthorIDAsync(PublikoUser userObject=null) //HttpResponseMessage
         {
-            string searchByAuthorID = $"/api/author/{userID}/pages";
+            string searchByAuthorID = $"/api/author/{userObject.Id}/pages";
             string fullURL = baseURL + searchByAuthorID;
 
             var request = new HttpRequestMessage(HttpMethod.Get, fullURL);
@@ -41,9 +60,9 @@ namespace PublikoWebApp.Services
             //else throw new Exception(response.ReasonPhrase);
         }
 
-        public async Task<string> GetPostsByAuthorIDAsync(string userID, PublikoUser userObject = null)
+        public async Task<string> GetPostsByAuthorIDAsync(PublikoUser userObject = null)
         {
-            string searchByAuthorID = $"/api/author/{userID}/posts";
+            string searchByAuthorID = $"/api/author/{userObject.Id}/posts";
             string fullURL = baseURL + searchByAuthorID;
 
             var request = new HttpRequestMessage(HttpMethod.Get, fullURL);
@@ -55,15 +74,6 @@ namespace PublikoWebApp.Services
                 return await response.Content.ReadAsStringAsync();
             }
             else throw new Exception("Error: StoredPagesServices->GetPostsByAuthorIDAsync()->if(response.IsSuccessStatusCode)");
-        }
-
-
-        public List<WebPage> GetAllPagesAsync()
-        {
-            List<WebPage> listado = new List<WebPage>();
-            
-            return listado;
-            //throw new NotImplementedException();
         }
 
 

@@ -36,7 +36,8 @@ namespace PublikoWebApp.Pages.LoggedIn
         }
 
         //Constructor
-        public MyStartModel(UserManager<PublikoUser> userManager, IStoredPagesService storedPagesService)
+        public MyStartModel(UserManager<PublikoUser> userManager,
+                            IStoredPagesService storedPagesService)
         {
             _userManager = userManager;
             _pagesService = storedPagesService;
@@ -53,12 +54,18 @@ namespace PublikoWebApp.Pages.LoggedIn
             var userCalling = await _userManager.GetUserAsync(User);
 
             string message = await _pagesService
-                .GetPagesByAuthorIDAsync(_userManager.GetUserId(User), userCalling);
+                .GetPagesByAuthorIDAsync(userCalling);
             string allPosts = await _pagesService
-                .GetPostsByAuthorIDAsync(_userManager.GetUserId(User), userCalling);
+                .GetPostsByAuthorIDAsync(userCalling);
 
-            Pages = JsonSerializer.Deserialize<List<WebPage>>(message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            Posts = JsonSerializer.Deserialize<List<WebPost>>(allPosts, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            Pages = JsonSerializer.Deserialize<List<WebPage>>(message, new JsonSerializerOptions 
+                        { 
+                            PropertyNameCaseInsensitive = true 
+                        });
+            Posts = JsonSerializer.Deserialize<List<WebPost>>(allPosts, new JsonSerializerOptions 
+                        { 
+                            PropertyNameCaseInsensitive = true 
+                        });
         }
 
         public void OnPost(string id)

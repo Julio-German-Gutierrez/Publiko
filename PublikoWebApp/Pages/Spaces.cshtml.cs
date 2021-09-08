@@ -36,9 +36,9 @@ namespace PublikoWebApp.Pages
             UserName = userObject.UserName;
 
             string message = await _pagesService
-                .GetPagesByAuthorIDAsync(userObject.Id, userObject);
+                .GetPagesByAuthorIDAsync(userObject);
             string allPosts = await _pagesService
-                .GetPostsByAuthorIDAsync(userObject.Id, userObject);
+                .GetPostsByAuthorIDAsync(userObject);
 
             Pages = JsonSerializer.Deserialize<List<WebPage>>(message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             Posts = JsonSerializer.Deserialize<List<WebPost>>(allPosts, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });

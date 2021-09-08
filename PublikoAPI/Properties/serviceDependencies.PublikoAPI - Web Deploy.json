@@ -4,10 +4,16 @@
       "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.ApiManagement/service/PublikoAPIapi/apis/PublikoAPI",
       "type": "apis.azure"
     },
+    "identityapp1": {
+      "type": "identityapp",
+      "connectionId": "",
+      "suggestion": "true",
+      "ignored": "true"
+    },
     "mssql1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/publiko-identity-db/databases/PublikoIdentityDB",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/ithsstudies/databases/PublikoApiDB",
       "type": "mssql.azure",
-      "connectionId": "ConnectionStrings:AzureConnection",
+      "connectionId": "ConnectionStrings:APIConnection",
       "secretStore": "AzureAppSettings"
     }
   }
