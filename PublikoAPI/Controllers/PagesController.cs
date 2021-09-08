@@ -23,7 +23,7 @@ namespace PublikoAPI.Controllers
             _globalServices = globalServices;
         }
 
-        public PublikoPagesDBContext _pagesDBContext { get; }
+        public PublikoPagesDBContext _pagesDBContext { get; } //
         public IGlobalIDServices _globalServices { get; }
 
 
@@ -40,7 +40,7 @@ namespace PublikoAPI.Controllers
 
         //All posts
         [HttpGet("allposts")]
-        [Produces("application/json")]
+        //[Produces("application/json")]
         [Authorize]
         public IEnumerable<WebPost> GetPosts() //ContentResult
         {
