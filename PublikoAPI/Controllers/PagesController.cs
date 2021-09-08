@@ -40,7 +40,7 @@ namespace PublikoAPI.Controllers
 
         //All posts
         [HttpGet("allposts")]
-        [Produces("application/json")]
+        //[Produces("application/json")]
         [Authorize]
         public IEnumerable<WebPost> GetPosts() //ContentResult
         {
