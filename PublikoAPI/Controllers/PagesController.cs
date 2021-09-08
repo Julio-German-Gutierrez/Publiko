@@ -23,7 +23,7 @@ namespace PublikoAPI.Controllers
             _globalServices = globalServices;
         }
 
-        public PublikoPagesDBContext _pagesDBContext { get; } //test 5 and 6
+        public PublikoPagesDBContext _pagesDBContext { get; } //test 7
         public IGlobalIDServices _globalServices { get; }
 
 
