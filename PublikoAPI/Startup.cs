@@ -36,8 +36,14 @@ namespace PublikoAPI
             services.AddSingleton<IGlobalIDServices, GlobalIDServices>();
 
             services.AddDbContext<PublikoPagesDBContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("APIConnectionSQLite"))
+            );
+
+            /* Old SQLServer connection
+            services.AddDbContext<PublikoPagesDBContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("APIConnection")));
+            */
 
             services.AddControllers();
 

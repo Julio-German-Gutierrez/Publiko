@@ -41,8 +41,14 @@ namespace PublikoWebApp
             });
 
             services.AddDbContext<PublikoIdentityDbContext>(options =>
+                options.UseSqlite(Configuration.GetConnectionString("IdentityConnectionSQLite")));
+
+            /* Old SQLServer
+            services.AddDbContext<PublikoIdentityDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("IdentityConnection")));
+            */
+
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDefaultIdentity<PublikoUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
