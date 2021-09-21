@@ -29,8 +29,8 @@ namespace PublikoWebApp.Services
                 { "name", user.UserName },
                 { "email", user.Email },
                 { "exp", ts },
-                //{ "iss", "https://localhost:44353/" }, //https://localhost:44353/
-                //{ "aud", "https://localhost:5001" } //https://localhost:5001
+                { "iss", "https://localhost:5010" }, //https://localhost:44353/
+                { "aud", "https://localhost:5000" } //https://localhost:5001
             };
 
             var secToken = new JwtSecurityToken(header, payload);

@@ -35,7 +35,7 @@ namespace PublikoWebApp.Services
         HttpClient _httpClient { get; }
 
         //string baseURL = @"https://publikoapiapi.azure-api.net/";
-        string baseURL = @"https://localhost:5001";
+        string baseURL = @"https://localhost:5000";
 
 
         /// <summary>

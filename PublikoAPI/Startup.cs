@@ -39,12 +39,6 @@ namespace PublikoAPI
                 options.UseSqlite(Configuration.GetConnectionString("APIConnectionSQLite"))
             );
 
-            /* Old SQLServer connection
-            services.AddDbContext<PublikoPagesDBContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("APIConnection")));
-            */
-
             services.AddControllers();
 
             //Add Token functionality
@@ -58,8 +52,8 @@ namespace PublikoAPI
                     IssuerSigningKey = SIGN_KEY,
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ValidIssuer = "https://localhost:44353/",
-                    ValidAudience = "https://localhost:5001",
+                    ValidIssuer = "https://localhost:5010/",
+                    ValidAudience = "https://localhost:5000",
                     ValidateLifetime = true
                 };
             });
