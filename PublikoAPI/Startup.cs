@@ -34,6 +34,7 @@ namespace PublikoAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IGlobalIDServices, GlobalIDServices>();
+            services.AddScoped<IPublikoAPIServices, PublikoAPIServices>();
 
             services.AddDbContext<PublikoPagesDBContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("APIConnectionSQLite"))

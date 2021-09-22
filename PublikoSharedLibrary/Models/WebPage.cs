@@ -6,14 +6,13 @@ namespace PublikoSharedLibrary.Models
 {
     public class WebPage
     {
+#nullable enable
         [Key]
-        [Required]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string PageID { get; set; }
-        [Required]
-        public DateTime PageDateCreated { get; set; }
-        [Required]
-        public DateTime PageDateUpdated { get; set; }
+        public string? PageID { get; set; }
+        public DateTime? PageDateCreated { get; set; }
+        public DateTime? PageDateUpdated { get; set; }
+#nullable disable
         [Required]
         public string PageTitle { get; set; }
         [Required]
