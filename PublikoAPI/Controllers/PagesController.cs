@@ -9,26 +9,31 @@ using PublikoAPI.Services;
 using System.Net.Http;
 using System.Net;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace PublikoAPI.Controllers
 {
     [ApiController]
+    //[Authorize]
     [Route("api/[controller]")]
+    
     public class PagesController : ControllerBase
     {
-        public PagesController(PublikoPagesDBContext pagesDBContext,
+        public ILogger _logger { get; }
+        public PublikoPagesDBContext _pagesDBContext { get; }
+        public IGlobalIDServices _globalServices { get; }
+        public PagesController(ILogger<PagesController> logger,
+                               PublikoPagesDBContext pagesDBContext,
                                IGlobalIDServices globalServices)
         {
+            _logger = logger;
             _pagesDBContext = pagesDBContext;
             _globalServices = globalServices;
         }
 
-        public PublikoPagesDBContext _pagesDBContext { get; }
-        public IGlobalIDServices _globalServices { get; }
 
 
         //All pages
-        [Authorize]
         [HttpGet("allpages")]
         [Produces("application/json")]
         public IEnumerable<WebPage> GetPages() //ContentResult
@@ -41,7 +46,6 @@ namespace PublikoAPI.Controllers
         //All posts
         [HttpGet("allposts")]
         [Produces("application/json")]
-        [Authorize]
         public IEnumerable<WebPost> GetPosts() //ContentResult
         {
             var posts = _pagesDBContext.Posts.AsEnumerable();
@@ -50,7 +54,6 @@ namespace PublikoAPI.Controllers
         }
 
         //Page by ID             ----------->>>>>>>>>>>>>>>>>>>>>>>> Elber: 605ad860-4a7c-4a63-821e-09f0af97476e
-        [Authorize]
         [HttpGet("~/api/page/{pageID}")]
         [Produces("application/json")]
         public async Task<WebPage> GetPageByID(string pageID) //ContentResult
@@ -62,7 +65,6 @@ namespace PublikoAPI.Controllers
         }
 
         //Post by ID             ----------->>>>>>>>>>>>>>>>>>>>>>>> ID = 0d6fe52d-643d-5b37-e579-3b61caeb386e  OR  f6ccea1a-003a-5a3f-49ba-3014e0678c3c
-        [Authorize]
         [HttpGet("~/api/post/{postID}")]
         [Produces("application/json")]
         public async Task<WebPost> GetPostByID(string postID) //ContentResult
@@ -76,7 +78,6 @@ namespace PublikoAPI.Controllers
         //All pages by author    ----------->>>>>>>>>>>>>>>>>>>>>>>> ID = 605ad860-4a7c-4a63-821e-09f0af97476e
         [HttpGet("~/api/author/{authorID}/pages")]
         [Produces("application/json")]
-        [Authorize]
         public IEnumerable<WebPage> GetPagesbyAuthor(string authorID) //ContentResult
         {
             var pages = _pagesDBContext.Pages.Where(i => authorID == i.UserID);
@@ -87,7 +88,6 @@ namespace PublikoAPI.Controllers
         //All posts by author    ----------->>>>>>>>>>>>>>>>>>>>>>>> ID = 605ad860-4a7c-4a63-821e-09f0af97476e
         [HttpGet("~/api/author/{authorID}/posts")]
         [Produces("application/json")]
-        [Authorize]
         public IEnumerable<WebPost> GetPostsbyAuthor(string authorID) //ContentResult
         {
             var posts = _pagesDBContext.Posts.Where(i => authorID == i.UserID);
@@ -96,27 +96,31 @@ namespace PublikoAPI.Controllers
         }
 
 
-        [HttpPost("Create/page/title/{URLPageTitle}/body/{URLPageBody}/order/{pageOrder}/user/{userID}")]
-        [Authorize]
+        [HttpPost("Create")]
         //[ValidateAntiForgeryToken]
-        public async Task<string> CreatePage(string URLPageTitle, string URLPageBody, int pageOrder, string userID) //[Bind("pageName,pageHead,pageBody,userID")]
+        public async Task<ActionResult> CreatePage(WebPage newPage) //[Bind("pageName,pageHead,pageBody,userID")]
         {
+            _logger.LogInformation("Inside Publiko API");
+
             if (ModelState.IsValid)
             {
                 DateTime now = DateTime.Now;
-                string pageTitle = System.Web.HttpUtility.UrlDecode(URLPageTitle);
-                string pageBody = System.Web.HttpUtility.UrlDecode(URLPageBody);
 
-                WebPage newPage = new WebPage()
-                {
-                    PageID = _globalServices.GuidFromString(_globalServices.GetSeed()),
-                    PageDateCreated = now,
-                    PageDateUpdated = now,
-                    PageOrder = pageOrder,
-                    PageTitle = pageTitle,
-                    PageBody = pageBody,
-                    UserID = userID
-                };
+                newPage.PageID = _globalServices.GuidFromString(_globalServices.GetSeed());
+                newPage.PageDateCreated = now;
+                newPage.PageDateUpdated = now;
+
+
+                //WebPage newPage = new WebPage()
+                //{
+                //    PageID = _globalServices.GuidFromString(_globalServices.GetSeed()),
+                //    PageDateCreated = now,
+                //    PageDateUpdated = now,
+                //    PageOrder = pageOrder,
+                //    PageTitle = pageTitle,
+                //    PageBody = pageBody,
+                //    UserID = userID
+                //};
 
                 try
                 {
@@ -126,17 +130,16 @@ namespace PublikoAPI.Controllers
                 catch (Exception e)
                 {
                     string message = "ERROR: PagesController->CreatePage()->TryCatch .\n";
-                    return message + e.Message;
+                    return Problem(message);
                 }
 
-                return "Page saved";
+                return Ok("Page saved");
             }
 
-            return "ERROR: Model invalid : PagesController->CreatePage()->if(ModelState.IsValid)";
+            return Problem("ERROR: Model invalid : PagesController->CreatePage()->if(ModelState.IsValid)");
         }
 
         [HttpPost("~/api/post/create/title/{URLPostTitle}/content/{URLPostContent}/user/{userID}")]
-        [Authorize]
         //[ValidateAntiForgeryToken]
         public async Task<string> CreatePost(string URLPostTitle, string URLPostContent, string userID) // user id: 605ad860-4a7c-4a63-821e-09f0af97476e
         {
@@ -174,7 +177,6 @@ namespace PublikoAPI.Controllers
         }
 
         [HttpPut("~/api/edit/{pageID}/title/{URLPageTitle}/body/{URLPageBody}/order/{pageOrder}")]
-        [Authorize]
         public async Task<string> EditPageAsync(string pageID, string URLPageTitle, string URLPageBody, int pageOrder)
         {
             WebPage webPage = await _pagesDBContext.Pages.FindAsync(pageID);
@@ -196,7 +198,6 @@ namespace PublikoAPI.Controllers
         }
 
         [HttpPut("~/api/postedit/{postID}/title/{URLPostTitle}/body/{URLPostContent}")]
-        [Authorize]
         public async Task<string> EditPostAsync(string postID, string URLPostTitle, string URLPostContent)
         {
             WebPost toEditPost = await _pagesDBContext.Posts.FindAsync(postID);
@@ -222,6 +223,7 @@ namespace PublikoAPI.Controllers
         //These last two methods are called not from c# but from Javascript (on the fly)
         //Still not protected by token. I will need to implement a Server service to deliver the tokens.
         [HttpGet("~/api/deletepage/{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> DeletePageByID(string id = null)
         {
             if (id != null)
@@ -238,6 +240,7 @@ namespace PublikoAPI.Controllers
         }
 
         [HttpGet("~/api/deletepost/{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> DeletePostByID(string id = null)
         {
             if (id != null)

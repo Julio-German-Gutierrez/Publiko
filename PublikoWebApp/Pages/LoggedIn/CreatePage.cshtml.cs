@@ -35,16 +35,23 @@ namespace PublikoWebApp.Pages.LoggedIn
             AmountPages = pages;
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync([Bind] WebPage newPage)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
+            if (newPage != null)
             {
-                string userID = _userManager.GetUserId(User);
+                newPage.UserID = _userManager.GetUserId(User);
                 var userObject = await _userManager.GetUserAsync(User);
-                string URLPageTitle = System.Web.HttpUtility.UrlEncodeUnicode(PageTitle);
-                string URLPageBody = System.Web.HttpUtility.UrlEncodeUnicode(PageBody);
 
-                string result = await _storedPagesService.CreatePageAsync(URLPageTitle, URLPageBody, PageOrder, userID, userObject);
+                //WebPage newPage = new WebPage
+                //{
+                //    PageTitle = this.PageTitle,
+                //    PageBody = this.PageBody,
+                //    PageOrder = this.PageOrder,
+                //    UserID = userID,
+                //};
+
+                string result = await _storedPagesService.CreatePageAsync(newPage, userObject);
                 if (result == "ok")
                 {
                     return RedirectToPage("MyStart");

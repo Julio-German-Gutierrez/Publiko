@@ -8,6 +8,9 @@ using System.Text.Json.Serialization;
 using PublikoSharedLibrary.Models;
 using Microsoft.AspNetCore.Identity;
 using PublikoWebApp.Data;
+using System.Text;
+using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Net.Mime;
 
 namespace PublikoWebApp.Services
 {
@@ -16,7 +19,7 @@ namespace PublikoWebApp.Services
     {
         Task<string> GetPagesByAuthorIDAsync(PublikoUser userObject); //HttpResponseMessage
         Task<string> GetPostsByAuthorIDAsync(PublikoUser userObject); //HttpResponseMessage
-        Task<string> CreatePageAsync(string pageTitle, string pageBody, int? pageOrder, string userID, PublikoUser userObject);
+        Task<string> CreatePageAsync(WebPage newPage, PublikoUser userObject);
         Task<string> CreatePostAsync(string uRLPostTitle, string uRLPostContent, string userID, PublikoUser userObject);
         Task<string> GetPageByIDAsync(string id, PublikoUser userObject);
         Task<string> EditPageAsync(string pageID, string pageTitle, string pageBody, int pageOrder, PublikoUser userObject);
@@ -78,23 +81,22 @@ namespace PublikoWebApp.Services
 
 
 
-        public async Task<string> CreatePageAsync(string pageTitle, string pageBody, int? pageOrder, string userID, PublikoUser userObject)
+        public async Task<string> CreatePageAsync(WebPage newPage, PublikoUser userObject)
         {
-            if (pageTitle != null && pageBody != null && pageOrder != null && userID != null)
-            {
-                string fullURL = baseURL + $"/api/pages/create/page/title/{pageTitle}/body/{pageBody}/order/{pageOrder}/user/{userID}";
+            // https://localhost:5000/api/Pages/Create
+            string fullURL = baseURL + $"/api/pages/create";
 
-                var request = new HttpRequestMessage(HttpMethod.Post, fullURL);
-                request.Headers.Add("Authorization", "Bearer " + TokenManager.GenerateJwtToken(userObject));
-                HttpResponseMessage response = await _httpClient.SendAsync(request);
+            var request = new HttpRequestMessage(HttpMethod.Post, fullURL);
+            //request.Headers.Add("Authorization", "Bearer " + TokenManager.GenerateJwtToken(userObject));
+            string newPageJson = JsonSerializer.Serialize(newPage);
+            request.Content = new StringContent(newPageJson, Encoding.UTF8, MediaTypeNames.Application.Json);
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    return "Error: StoredPagesService->CreatePageAsync()->if(!response.IsSuccessStatusCode)";
-                }
-            }
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
 
-            return "ok";
+            if (response.IsSuccessStatusCode)
+                return "ok";
+            else
+                return "Error: StoredPagesService->CreatePageAsync()->if(!response.IsSuccessStatusCode)";
         }
 
         public async Task<string> CreatePostAsync(string uRLPostTitle, string uRLPostContent, string userID, PublikoUser userObject)
