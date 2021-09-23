@@ -74,9 +74,9 @@
                             </div>
 
                             <div class="d-flex justify-content-between">
-                                <a hidden class="text-black-50" asp-page="EditPost" asp-route-id="@post.PostID">[Edit]</a>
+                                <a hidden class="text-black-50" asp-page="EditPost" asp-route-postId="@post.PostID">[Edit]</a>
                                 <div>
-                                    <a class="text-black-50" asp-page="EditPost" asp-route-id="@post.PostID">[Edit]</a>
+                                    <a class="text-black-50" asp-page="EditPost" asp-route-postId="@post.PostID">[Edit]</a>
                                     <a class="text-danger" href="#" onclick="DeletePost('@post.PostID')">[Delete]</a>
                                 </div>
                                 <span>By: @User.Identity.Name</span>
@@ -97,7 +97,7 @@
                 <h2 class="pt-3">@p.PageTitle</h2>
 
                 <div>
-                    <a class="text-black-50" asp-page="EditPage" asp-route-id="@p.PageID">[Edit Page]</a>
+                    <a class="text-black-50" asp-page="EditPage" asp-route-pageId="@p.PageID">[Edit Page]</a>
                     <a class="text-danger" href="#" onclick="DeletePage('@p.PageID')">[Delete Page]</a>
                 </div>
 
@@ -131,8 +131,8 @@
         if (response) {
             console.log("Inside IF on DeletePage()")
             $.ajax({
-                type: "GET",
-                url: "https://localhost:5001/api/deletepage/" + id,
+                method: "GET",
+                url: "https://localhost:5000/api/deletepage/" + id,
                 //contentType: "application/json; charset=utf-8",
                 //dataType: "jsonp",
                 success: function (result) {
@@ -166,7 +166,7 @@
             console.log("Inside IF on DeletePost()")
             $.ajax({
                 type: "GET",
-                url: "https://localhost:5001/api/deletepost/" + id,
+                url: "https://localhost:5000/api/deletepost/" + id,
                 contentType: "application/json; charset=utf-8",
                 dataType: "jsonp",
                 success: function (data) {

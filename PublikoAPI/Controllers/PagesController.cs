@@ -170,7 +170,7 @@ namespace PublikoAPI.Controllers
         //97437952-9e2f-8397-415b-c97cc00d7dc2
         //These last two methods are called not from c# but from Javascript (on the fly)
         //Still not protected by token. I will need to implement a Server service to deliver the tokens.
-        [HttpDelete("~/api/deletepage/{id}")]
+        [HttpGet("~/api/deletepage/{id}")]
         [AllowAnonymous]
         public async Task<ActionResult> DeletePageByID(string id = null)
         {
@@ -184,7 +184,7 @@ namespace PublikoAPI.Controllers
 
 
 
-        [HttpDelete("~/api/deletepost/{id}")]
+        [HttpGet("~/api/deletepost/{id}")]
         [AllowAnonymous]
         public async Task<ActionResult> DeletePostByID(string id = null)
         {
