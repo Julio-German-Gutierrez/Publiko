@@ -1,4 +1,5 @@
 ﻿@page
+@inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
 @model PublikoWebApp.Pages.LoggedIn.MyStartModel
 
 @{
@@ -120,35 +121,28 @@
 
 <script type="text/javascript">
 
+    let PublikoAPIUrl = "@Configuration.GetSection("PublikoAPIAddress").Value";
+
     function DeletePage(id) {
 
         let response = confirm("Are you sure that you want to delete this Page?")
 
         /*
-         * Function partially working. It deletes the page but Ajax return error.
-         * I am refreshing the page by doing it inside the error section.
+         * Function partially working. It needs to implement JWT Token
          */
         if (response) {
             console.log("Inside IF on DeletePage()")
             $.ajax({
                 method: "GET",
-                url: "https://localhost:5000/api/deletepage/" + id,
-                //contentType: "application/json; charset=utf-8",
-                //dataType: "jsonp",
-                success: function (result) {
-                    console.log("success");
-                    window.location.reload(true);
-                }, //End of AJAX Success function
-
-                //failure: function (data) {
-                //    console.log("Failure: " + data.responseText);
-                //    window.location.reload(true);
-                //}, //End of AJAX failure function
-                error: function (xhr) {
-                    console.log("Error: MyStart->-JAVASCRIPT:DeletePage(id)->ajax->error");
-                    window.location.reload(true);
-                } //End of AJAX error function
-
+                url: PublikoAPIUrl + "/api/deletepage/" + id,
+                contentType: "application/json; charset=utf-8",
+                dataType: "jsonp",
+                statusCode: {
+                    200: function (data) {
+                        console.log("success" + data.responseText);
+                        window.location.reload(true);
+                    }
+                }
             });
         }
     }
@@ -159,30 +153,21 @@
         let response = confirm("Are you sure that you want to delete this Post?")
 
         /*
-         * Function partially working. It deletes the page but Ajax return error.
-         * I am refreshing the page by doing it inside the error section.
+         * Function partially working. It needs to implement JWT Token
          */
         if (response) {
             console.log("Inside IF on DeletePost()")
             $.ajax({
                 type: "GET",
-                url: "https://localhost:5000/api/deletepost/" + id,
+                url: PublikoAPIUrl + "/api/deletepost/" + id,
                 contentType: "application/json; charset=utf-8",
                 dataType: "jsonp",
-                success: function (data) {
-                    console.log("success" + data.responseText);
-                    window.location.reload(true);
-                }, //End of AJAX Success function
-
-                failure: function (data) {
-                    console.log("Failure: " + data.responseText);
-                    window.location.reload(true);
-                }, //End of AJAX failure function
-                error: function (data) {
-                    console.log("Error: MyStart->-JAVASCRIPT:DeletePost(id)->ajax->error");
-                    window.location.reload(true);
-                } //End of AJAX error function
-
+                statusCode: {
+                    200: function (data) {
+                        console.log("success" + data.responseText);
+                        window.location.reload(true);
+                    }
+                }
             });
         }
     }

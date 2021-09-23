@@ -50,7 +50,7 @@ namespace PublikoWebApp
 
             services.AddHttpClient("PublikoAPI", c =>
             {
-                c.BaseAddress = new Uri("https://localhost:5000/");
+                c.BaseAddress = new Uri(Configuration.GetValue<string>("PublikoAPIAddress"));
             });
 
             //START Added by me.
