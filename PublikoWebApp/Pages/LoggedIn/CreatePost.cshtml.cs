@@ -8,6 +8,7 @@ using PublikoWebApp.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using PublikoWebApp.Data;
+using PublikoSharedLibrary.Models;
 
 /*
 public string PostID { get; set; }
@@ -38,29 +39,17 @@ namespace PublikoWebApp.Pages.LoggedIn
         public IStoredPagesService _storedPagesService { get; }
         public UserManager<PublikoUser> _userManager { get; }
 
-        public void OnGet()
-        {
-        }
 
         //Trabajar sobre el metodo post
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync([Bind] WebPost newPost)
         {
-            if (ModelState.IsValid)
-            {
-                string userID = _userManager.GetUserId(User);
-                var userObject = await _userManager.GetUserAsync(User);
-                string URLPostTitle = System.Web.HttpUtility.UrlEncodeUnicode(PostTitle);
-                string URLPostContent = System.Web.HttpUtility.UrlEncodeUnicode(PostContent);
+            newPost.UserID = _userManager.GetUserId(User);
 
-                string result = await _storedPagesService.CreatePostAsync(URLPostTitle, URLPostContent, userID, userObject);
-                if (result == "ok")
-                {
-                    return RedirectToPage("MyStart");
-                }
-                else
-                {
-                    return Page();
-                }
+            if (newPost != null)
+            {
+                string result = await _storedPagesService.CreatePostAsync(newPost);
+
+                if (result == "ok") return RedirectToPage("MyStart");
             }
             return Page();
         }

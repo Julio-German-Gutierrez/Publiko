@@ -25,11 +25,10 @@ namespace PublikoWebApp.Pages.LoggedIn
         public IStoredPagesService _storedPagesService { get; set; }
         public UserManager<PublikoUser> _userManager { get; set; }
 
-        public async Task OnGet(string id)
+        public async Task OnGet(string postId)
         {
             var userObject = await _userManager.GetUserAsync(User);
-            string message = await _storedPagesService.GetPostByIDAsync(id, userObject);
-            ToEditPost = JsonSerializer.Deserialize<WebPost>(message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            ToEditPost = await _storedPagesService.GetPostByIDAsync(postId, userObject);
         }
 
         public async Task<IActionResult> OnPost()
@@ -37,16 +36,10 @@ namespace PublikoWebApp.Pages.LoggedIn
             if (ModelState.IsValid)
             {
                 var userObject = await _userManager.GetUserAsync(User);
-                string result = await _storedPagesService.EditPostAsync(ToEditPost.PostID, ToEditPost.PostTitle, ToEditPost.PostContent, userObject);
+                string result = await _storedPagesService.EditPostAsync(ToEditPost, userObject);
 
-                if (result == "Post Updated")
-                {
+                if (result.ToLower().Equals("ok"))
                     return RedirectToPage("MyStart");
-                }
-                else
-                {
-                    return Page();
-                }
             }
             return Page();
         }

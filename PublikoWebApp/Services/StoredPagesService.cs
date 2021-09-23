@@ -11,6 +11,7 @@ using PublikoWebApp.Data;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.Formatters;
 using System.Net.Mime;
+using Microsoft.Extensions.Logging;
 
 namespace PublikoWebApp.Services
 {
@@ -19,28 +20,34 @@ namespace PublikoWebApp.Services
     {
         Task<string> GetPagesByAuthorIDAsync(PublikoUser userObject); //HttpResponseMessage
         Task<string> GetPostsByAuthorIDAsync(PublikoUser userObject); //HttpResponseMessage
-        Task<string> CreatePageAsync(WebPage newPage, PublikoUser userObject);
-        Task<string> CreatePostAsync(string uRLPostTitle, string uRLPostContent, string userID, PublikoUser userObject);
-        Task<string> GetPageByIDAsync(string id, PublikoUser userObject);
-        Task<string> EditPageAsync(string pageID, string pageTitle, string pageBody, int pageOrder, PublikoUser userObject);
-        Task<string> GetPostByIDAsync(string id, PublikoUser userObject);
-        Task<string> EditPostAsync(string postID, string postTitle, string postContent, PublikoUser userObject);
+        Task<string> CreatePageAsync(WebPage newPage);
+        Task<string> CreatePostAsync(WebPost newPost);
+        Task<WebPage> GetPageByIDAsync(string id, PublikoUser userObject);
+        Task<string> EditPageAsync(WebPage webPage);
+        Task<WebPost> GetPostByIDAsync(string postId, PublikoUser userObject);
+        Task<string> EditPostAsync(WebPost webPost, PublikoUser userObject);
+        
     }
 
 
     public class StoredPagesService : IStoredPagesService
     {
-        public StoredPagesService(HttpClient httpClient)
+        IHttpClientFactory _httpClientFactory { get; }
+        public UserManager<PublikoUser> _userManager { get; }
+        public ILogger<StoredPagesService> _logger { get; }
+
+        public StoredPagesService(IHttpClientFactory httpClientFactory,
+                                  UserManager<PublikoUser> userManager,
+                                  ILogger<StoredPagesService> logger)
         {
-            _httpClient = httpClient;
+            _httpClientFactory = httpClientFactory;
+            _userManager = userManager;
+            _logger = logger;
         }
 
-        HttpClient _httpClient { get; }
-
-        //string baseURL = @"https://publikoapiapi.azure-api.net/";
-        string baseURL = @"https://localhost:5000";
 
 
+        // OK!
         /// <summary>
         /// Get User Pages by ID 
         /// </summary>
@@ -48,47 +55,54 @@ namespace PublikoWebApp.Services
         /// <returns></returns>
         public async Task<string> GetPagesByAuthorIDAsync(PublikoUser userObject=null) //HttpResponseMessage
         {
-            string searchByAuthorID = $"/api/author/{userObject.Id}/pages";
-            string fullURL = baseURL + searchByAuthorID;
+            var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
 
-            var request = new HttpRequestMessage(HttpMethod.Get, fullURL);
+            string resource = $"api/author/{userObject.Id}/pages";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, resource);
             request.Headers.Add("Authorization", "Bearer " + TokenManager.GenerateJwtToken(userObject));
             var response = await _httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
-            {
                 return await response.Content.ReadAsStringAsync();
-            }
-            else throw new Exception("Problema");
-            //else throw new Exception(response.ReasonPhrase);
+            else
+                return "fail";
         }
 
+
+
+        // OK!
         public async Task<string> GetPostsByAuthorIDAsync(PublikoUser userObject = null)
         {
-            string searchByAuthorID = $"/api/author/{userObject.Id}/posts";
-            string fullURL = baseURL + searchByAuthorID;
+            var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
 
-            var request = new HttpRequestMessage(HttpMethod.Get, fullURL);
+            string resource = $"api/author/{userObject.Id}/posts";
+
+            var request = new HttpRequestMessage(HttpMethod.Get, resource);
             request.Headers.Add("Authorization", "Bearer " + TokenManager.GenerateJwtToken(userObject));
             var response = await _httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
-            {
                 return await response.Content.ReadAsStringAsync();
-            }
-            else throw new Exception("Error: StoredPagesServices->GetPostsByAuthorIDAsync()->if(response.IsSuccessStatusCode)");
+            else
+                return "fail";
         }
 
 
-
-        public async Task<string> CreatePageAsync(WebPage newPage, PublikoUser userObject)
+        
+        // OK!
+        public async Task<string> CreatePageAsync(WebPage newPage)
         {
-            // https://localhost:5000/api/Pages/Create
-            string fullURL = baseURL + $"/api/pages/create";
+            var userObject = await _userManager.FindByIdAsync(newPage.UserID);
 
-            var request = new HttpRequestMessage(HttpMethod.Post, fullURL);
+            var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
+            string resource = $"api/page/create";
+
+            var newPageInc = ConvertToWebPageIncomming(newPage);
+
+            var request = new HttpRequestMessage(HttpMethod.Post, resource);
             //request.Headers.Add("Authorization", "Bearer " + TokenManager.GenerateJwtToken(userObject));
-            string newPageJson = JsonSerializer.Serialize(newPage);
+            string newPageJson = JsonSerializer.Serialize(newPageInc);
             request.Content = new StringContent(newPageJson, Encoding.UTF8, MediaTypeNames.Application.Json);
 
             HttpResponseMessage response = await _httpClient.SendAsync(request);
@@ -99,98 +113,171 @@ namespace PublikoWebApp.Services
                 return "Error: StoredPagesService->CreatePageAsync()->if(!response.IsSuccessStatusCode)";
         }
 
-        public async Task<string> CreatePostAsync(string uRLPostTitle, string uRLPostContent, string userID, PublikoUser userObject)
+
+
+        // OK!
+        public async Task<string> CreatePostAsync(WebPost newPost)
         {
-            if (uRLPostTitle != null && uRLPostContent != null && userID != null)
-            {
-                string fullURL = baseURL + $"/api/post/create/title/{uRLPostTitle}/content/{uRLPostContent}/user/{userID}";
+            var userObject = await _userManager.FindByIdAsync(newPost.UserID);
 
-                var request = new HttpRequestMessage(HttpMethod.Post, fullURL);
-                request.Headers.Add("Authorization", "Bearer " + TokenManager.GenerateJwtToken(userObject));
-                HttpResponseMessage response = await _httpClient.SendAsync(request);
+            var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
+            string resource = $"api/post/create";
 
-                if (!response.IsSuccessStatusCode)
-                {
-                    return "Error: StoredPagesService->CreatePostAsync()->if(!response.IsSuccessStatusCode)";
-                }
-            }
+            var newPostInc = ConvertToWebPostIncomming(newPost);
 
-            return "ok";
+            var request = new HttpRequestMessage(HttpMethod.Post, resource);
+            //request.Headers.Add("Authorization", "Bearer " + TokenManager.GenerateJwtToken(userObject));
+            string newPostJson = JsonSerializer.Serialize(newPostInc);
+            request.Content = new StringContent(newPostJson, Encoding.UTF8, MediaTypeNames.Application.Json);
+
+            HttpResponseMessage response = await _httpClient.SendAsync(request);
+
+            if (response.IsSuccessStatusCode)
+                return "ok";
+            else
+                return "Error: StoredPagesService->CreatePostAsync()->if(!response.IsSuccessStatusCode)";
         }
 
-        public async Task<string> GetPageByIDAsync(string id, PublikoUser userObject)
-        {
-            string fullURL = baseURL + $"/api/page/{id}";
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, fullURL);
-            request.Headers.Add("Authorization", "Bearer " + TokenManager.GenerateJwtToken(userObject));
+        // OK!
+        public async Task<WebPage> GetPageByIDAsync(string pageId, PublikoUser userObject)
+        {
+            var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
+            string resource = $"api/page/{pageId}";
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, resource);
+            //request.Headers.Add("Authorization", "Bearer " + TokenManager.GenerateJwtToken(userObject));
             var response = await _httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadAsStringAsync();
+                string jsonString = await response.Content.ReadAsStringAsync();
+                var page = JsonSerializer.Deserialize<WebPage>
+                    (
+                        jsonString, 
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                    );
+                return page;
             }
 
-            return "Error: StoredPagesService->GetPageByIDAsync()->if (response.IsSuccessStatusCode)";
+            return null;
         }
 
-        public async Task<string> EditPageAsync(string pageID, string pageTitle, string pageBody, int pageOrder, PublikoUser userObject)
+
+        // OK!
+        public async Task<string> EditPageAsync(WebPage webPage)
         {
-            string URLPageTitle = System.Web.HttpUtility.UrlEncodeUnicode(pageTitle);
-            string URLPageBody = System.Web.HttpUtility.UrlEncodeUnicode(pageBody);
+            var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
+            string source = $"api/editpage";
 
-            string fullURL = baseURL + $"/api/edit/{pageID}/title/{URLPageTitle}/body/{URLPageBody}/order/{pageOrder}";
+            var webPageEdit = ConvertToWebPageEditIncomming(webPage);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, fullURL);
-            request.Headers.Add("Authorization", "Bearer " + TokenManager.GenerateJwtToken(userObject));
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, source);
+            //request.Headers.Add("Authorization", "Bearer " + TokenManager.GenerateJwtToken(userObject));
+            var webPageJson = JsonSerializer.Serialize(webPageEdit, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            request.Content = new StringContent(webPageJson, Encoding.UTF8, MediaTypeNames.Application.Json);
             var response = await _httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
-            {
-                return "Page Updated";
-            }
+                return "ok";
             else
             {
-                return "Error: StoredPagesService->EditPageAsync()->if(response.IsSuccessStatusCode)";
+                _logger.LogInformation("Error: StoredPagesService->EditPageAsync()->if(response.IsSuccessStatusCode)");
+                return "fail";
             }
-
         }
 
-        public async Task<string> GetPostByIDAsync(string id, PublikoUser userObject)
-        {
-            string fullURL = baseURL + $"/api/post/{id}";
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, fullURL);
-            request.Headers.Add("Authorization", "Bearer " + TokenManager.GenerateJwtToken(userObject));
+
+
+        // OK!
+        public async Task<WebPost> GetPostByIDAsync(string postId, PublikoUser userObject)
+        {
+            var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
+            string resource = $"api/post/{postId}";
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, resource);
+            //request.Headers.Add("Authorization", "Bearer " + TokenManager.GenerateJwtToken(userObject));
             var response = await _httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadAsStringAsync();
+                string jsonString = await response.Content.ReadAsStringAsync();
+                var post = JsonSerializer.Deserialize<WebPost>
+                    (
+                        jsonString,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                    );
+                return post;
             }
-
-            return "Error: StoredPagesService->GetPostByIDAsync()->if(response.IsSuccessStatusCode)";
+            return null;
         }
 
-        public async Task<string> EditPostAsync(string postID, string postTitle, string postContent, PublikoUser userObject)
+
+        // 
+        public async Task<string> EditPostAsync(WebPost webPost, PublikoUser userObject)
         {
-            string URLPostTitle = System.Web.HttpUtility.UrlEncodeUnicode(postTitle);
-            string URLPostContent = System.Web.HttpUtility.UrlEncodeUnicode(postContent);
+            var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
+            string resource = $"api/editpost";
 
-            string fullURL = baseURL + $"/api/postedit/{postID}/title/{URLPostTitle}/body/{URLPostContent}";
+            var editPost = ConvertToWebPostEditIncomming(webPost);
 
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, fullURL);
-            request.Headers.Add("Authorization", "Bearer " + TokenManager.GenerateJwtToken(userObject));
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, resource);
+            //request.Headers.Add("Authorization", "Bearer " + TokenManager.GenerateJwtToken(userObject));
+            var editPostJson = JsonSerializer.Serialize(editPost, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            request.Content = new StringContent(editPostJson, Encoding.UTF8, MediaTypeNames.Application.Json);
+
             var response = await _httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
-            {
-                return "Post Updated";
-            }
+                return "ok";
             else
             {
-                return "Error: StoredPagesService->EditPostAsync()->if(response.IsSuccessStatusCode)";
+                _logger.LogInformation("Error: StoredPagesService->EditPostAsync()->if(response.IsSuccessStatusCode)");
+                return "fail";
             }
+        }
+
+        private WebPostEditIncomming ConvertToWebPostEditIncomming(WebPost toEditPost)
+        {
+            return new WebPostEditIncomming
+            {
+                PostId = toEditPost.PostID,
+                PostTitle = toEditPost.PostTitle,
+                PostContent = toEditPost.PostContent,
+                PostUserID = toEditPost.UserID
+            };
+        }
+        private WebPageEditIncomming ConvertToWebPageEditIncomming(WebPage webPage)
+        {
+            return new WebPageEditIncomming
+            {
+                PageId = webPage.PageID,
+                PageTitle = webPage.PageTitle,
+                PageBody = webPage.PageBody,
+                PageOrder = webPage.PageOrder,
+                PageUserID = webPage.UserID
+            };
+        }
+        private WebPageIncomming ConvertToWebPageIncomming(WebPage newPage)
+        {
+            return new WebPageIncomming
+            {
+                PageTitle = newPage.PageTitle,
+                PageBody = newPage.PageBody,
+                PageOrder = newPage.PageOrder,
+                PageUserID = newPage.UserID
+            };
+        }
+
+        private WebPostIncomming ConvertToWebPostIncomming(WebPost newPost)
+        {
+            return new WebPostIncomming
+            {
+                PostTitle = newPost.PostTitle,
+                PostContent = newPost.PostContent,
+                PostUserID = newPost.UserID
+            };
         }
     }
 }

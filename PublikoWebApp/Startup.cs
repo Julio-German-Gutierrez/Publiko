@@ -48,7 +48,10 @@ namespace PublikoWebApp
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<PublikoIdentityDbContext>();
 
-            services.AddHttpClient();
+            services.AddHttpClient("PublikoAPI", c =>
+            {
+                c.BaseAddress = new Uri("https://localhost:5000/");
+            });
 
             //START Added by me.
 
@@ -86,7 +89,7 @@ namespace PublikoWebApp
             //END Added by me.
 
             //Own Services
-            services.AddSingleton<IStoredPagesService, StoredPagesService>();
+            services.AddScoped<IStoredPagesService, StoredPagesService>();
             services.AddSingleton<IGlobalIDServices, GlobalIDServices>();
 
             services.AddRazorPages();

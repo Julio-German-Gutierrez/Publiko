@@ -26,28 +26,21 @@ namespace PublikoWebApp.Pages.LoggedIn
         }
 
         
-        public async Task OnGetAsync(string id) //I got the ID from the template on the HtmlPage
+        public async Task OnGetAsync(string pageId) //I got the ID from the template on the HtmlPage
         {
             var userObject = await _userManager.GetUserAsync(User);
-            string message = await _storedPagesService.GetPageByIDAsync(id, userObject);
-            EditPage = JsonSerializer.Deserialize<WebPage>(message, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+            EditPage = await _storedPagesService.GetPageByIDAsync(pageId, userObject);
         }
 
         public async Task<IActionResult> OnPostEditAsync()
         {
             if (ModelState.IsValid)
             {
-                var userObject = await _userManager.GetUserAsync(User);
-                string result = await _storedPagesService.EditPageAsync(EditPage.PageID, EditPage.PageTitle, EditPage.PageBody, EditPage.PageOrder, userObject);
+                //var userObject = await _userManager.GetUserAsync(User);
+                string result = await _storedPagesService.EditPageAsync(EditPage);
 
-                if (result == "Page Updated")
-                {
+                if (result.ToLower().Equals("ok"))
                     return RedirectToPage("MyStart");
-                }
-                else
-                {
-                    return Page();
-                }
             }
             return Page();
         }

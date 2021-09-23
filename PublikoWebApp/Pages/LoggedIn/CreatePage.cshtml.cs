@@ -37,29 +37,13 @@ namespace PublikoWebApp.Pages.LoggedIn
 
         public async Task<IActionResult> OnPostAsync([Bind] WebPage newPage)
         {
-            //if (ModelState.IsValid)
+            newPage.UserID = _userManager.GetUserId(User);
+
             if (newPage != null)
             {
-                newPage.UserID = _userManager.GetUserId(User);
-                var userObject = await _userManager.GetUserAsync(User);
-
-                //WebPage newPage = new WebPage
-                //{
-                //    PageTitle = this.PageTitle,
-                //    PageBody = this.PageBody,
-                //    PageOrder = this.PageOrder,
-                //    UserID = userID,
-                //};
-
-                string result = await _storedPagesService.CreatePageAsync(newPage, userObject);
-                if (result == "ok")
-                {
-                    return RedirectToPage("MyStart");
-                }
-                else
-                {
-                    return Page();
-                }
+                string result = await _storedPagesService.CreatePageAsync(newPage);
+                
+                if (result == "ok") return RedirectToPage("MyStart");
             }
             return Page();
         }
