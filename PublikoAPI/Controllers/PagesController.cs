@@ -16,8 +16,8 @@ using Microsoft.AspNetCore.Cors;
 namespace PublikoAPI.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("api/[controller]")]
+    [Authorize]
     public class PagesController : ControllerBase
     {
         public ILogger _logger { get; }
@@ -99,7 +99,6 @@ namespace PublikoAPI.Controllers
 
         // OK!
         [HttpPost("~/api/page/create")]
-        //[ValidateAntiForgeryToken]
         public async Task<ActionResult> CreatePage(WebPageIncomming webPageIncomming)
         {
             if (ModelState.IsValid)
@@ -117,7 +116,6 @@ namespace PublikoAPI.Controllers
 
         // OK!
         [HttpPost("~/api/post/create")]
-        //[ValidateAntiForgeryToken]
         public async Task<ActionResult> CreatePost(WebPostIncomming webPostIncomming) // user id: 605ad860-4a7c-4a63-821e-09f0af97476e
         {
             if (ModelState.IsValid)

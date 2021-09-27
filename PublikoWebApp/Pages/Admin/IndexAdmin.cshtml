@@ -1,7 +1,7 @@
 ﻿@page
 @model PublikoWebApp.Pages.Admin.IndexAdminModel
 @{
-    
+
 }
 
 <div class="d-flex justify-content-center" style="height:100vh;background-color:rgb(220,220,220)">
@@ -37,29 +37,18 @@
                             <p>Selected user: <span id="selectedUserShow" class="text-danger">[None]</span></p>
                             <hr />
 
-                            <table class="table table-hover">
-                                <thead class="thead-dark">
-                                    <tr class="">
-                                        <th>Name</th>
-                                        <th>Access</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (var item in Model.listOfUsers)
-                                    {
-                                        <tr onclick="SelectUser('@item[3]')">
-                                            <td>@item[0]</td>
-                                            <td>@item[5]</td>
-                                        </tr>
-                                    }
-                                </tbody>
+                            <select multiple size="10" class="custom-select mb-3">
+                                @foreach (var user in Model.listOfUsers)
+                                {
+                                    <option value="value" onclick="SelectUser('@user[3]')">@user[0]</option>
+                                }
+                            </select>
 
-                            </table>
 
                             <div hidden id="selectedUserHidden"></div>
 
                             <!-- Buttons previous-next -->
-                            <div class="d-flex justify-content-end" role="group">
+                            <div hidden class="d-flex justify-content-end" role="group">
                                 <div class="btn-group" style="padding:30px">
                                     <button type="button" class="btn btn-primary">Previous</button>
                                     <button type="button" class="btn btn-primary">Next</button>
@@ -159,7 +148,7 @@
                         <!--STATUS-->
                         <div class="container-fluid" id="status">
                             <h2 class="mt-4">Status</h2>
-                            <p>Status: <span id="selectedUserStatus" class="text-danger"></span></p>
+                            <p>Account: <span id="selectedUserStatus" class="text-danger"></span></p>
                         </div>
                     </div>
                 </form>
@@ -201,7 +190,7 @@
                 //Overview
                 document.getElementById('selectedUserOverview').innerHTML = list[i][0];
                 //Status
-                document.getElementById('selectedUserStatus').innerHTML = list[i][0];
+                //document.getElementById('selectedUserStatus').innerHTML;// = list[i][0];
 
                 let men = document.getElementsByClassName('menues');
                 
@@ -213,11 +202,14 @@
                 men.userID.value = list[i][3];
                 men.userID.readOnly = true;
 
+                let userStatus = document.getElementById("selectedUserStatus");
                 
                 if (list[i][4] == 'true') {
                     men.userLock.checked = true;
+                    userStatus.innerHTML = '<span class="text-danger">Locked</span>';
                 } else {
                     men.userLock.checked = false;
+                    userStatus.innerHTML = '<span class="text-success">Active</span>';
                 }
 
                 men.userAccess.value = list[i][5];

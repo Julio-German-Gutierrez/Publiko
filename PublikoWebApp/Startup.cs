@@ -30,18 +30,6 @@ namespace PublikoWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy("PublikoAPI", 
-            //        builder =>
-            //        {
-            //            builder.WithOrigins("https://localhost:5010", "https://localhost:5000")
-            //                .AllowAnyHeader()
-            //                .AllowAnyMethod()
-            //                .AllowCredentials();//"https://localhost:5010", 
-            //        });
-            //});
-
             //GDPR
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -78,13 +66,12 @@ namespace PublikoWebApp
                 options.Password.RequiredUniqueChars = 1;
 
                 // Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromDays(7);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
 
                 // User settings.
-                options.User.AllowedUserNameCharacters =
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+ ";
                 options.User.RequireUniqueEmail = false;
             });
 
@@ -133,13 +120,11 @@ namespace PublikoWebApp
                 app.UseHsts();
             }
 
-            app.UseRouting();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-
-            //app.UseCors();
+            app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
