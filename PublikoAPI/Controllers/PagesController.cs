@@ -11,13 +11,13 @@ using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Cors;
 
 namespace PublikoAPI.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
-    
     public class PagesController : ControllerBase
     {
         public ILogger _logger { get; }
@@ -167,11 +167,7 @@ namespace PublikoAPI.Controllers
 
 
 
-        //97437952-9e2f-8397-415b-c97cc00d7dc2
-        //These last two methods are called not from c# but from Javascript (on the fly)
-        //Still not protected by token. I will need to implement a Server service to deliver the tokens.
-        [HttpGet("~/api/deletepage/{id}")]
-        [AllowAnonymous]
+        [HttpDelete("~/api/deletepage/{id}")]
         public async Task<ActionResult> DeletePageByID(string id = null)
         {
             string result = await _publikoAPIServices.DeletePageAsync(id);
@@ -184,8 +180,7 @@ namespace PublikoAPI.Controllers
 
 
 
-        [HttpGet("~/api/deletepost/{id}")]
-        [AllowAnonymous]
+        [HttpDelete("~/api/deletepost/{id}")]
         public async Task<ActionResult> DeletePostByID(string id = null)
         {
             string result = await _publikoAPIServices.DeletePostAsync(id);

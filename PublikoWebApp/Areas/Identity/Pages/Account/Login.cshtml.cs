@@ -23,7 +23,7 @@ namespace PublikoWebApp.Areas.Identity.Pages.Account
         public RoleManager<IdentityRole> _roleManager { get; }
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<PublikoUser> signInManager, 
+        public LoginModel(SignInManager<PublikoUser> signInManager,
             ILogger<LoginModel> logger,
             UserManager<PublikoUser> userManager,
             RoleManager<IdentityRole> roleManager)
@@ -46,12 +46,12 @@ namespace PublikoWebApp.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            public string Name { get; set; }
-
             //[Required]
-            //[EmailAddress]
-            //public string Email { get; set; }
+            //public string Name { get; set; }
+
+            [Required]
+            [EmailAddress]
+            public string Email { get; set; }
 
             [Required]
             [DataType(DataType.Password)]
@@ -88,13 +88,14 @@ namespace PublikoWebApp.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(Input.Name, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
 
                     //If user is admin
-                    if (IsAdminAsync(Input.Name).Result)
+                    if (IsAdminAsync(user.UserName).Result)
                     {
                         return LocalRedirect("~/Admin/IndexAdmin");
                     }
@@ -124,7 +125,7 @@ namespace PublikoWebApp.Areas.Identity.Pages.Account
         public async Task<bool> IsAdminAsync(string userName)
         {
             var usersRole = await _userManager.GetUsersInRoleAsync("Admin"); //List of users in Admin role
-            var userToCheck = await _userManager.FindByNameAsync(Input.Name);
+            var userToCheck = await _userManager.FindByNameAsync(userName);
             foreach (var u in usersRole)
             {
                 if (u.Id == userToCheck.Id)

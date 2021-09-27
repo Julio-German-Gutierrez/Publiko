@@ -30,6 +30,18 @@ namespace PublikoWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddCors(options =>
+            //{
+            //    options.AddPolicy("PublikoAPI", 
+            //        builder =>
+            //        {
+            //            builder.WithOrigins("https://localhost:5010", "https://localhost:5000")
+            //                .AllowAnyHeader()
+            //                .AllowAnyMethod()
+            //                .AllowCredentials();//"https://localhost:5010", 
+            //        });
+            //});
+
             //GDPR
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -50,7 +62,7 @@ namespace PublikoWebApp
 
             services.AddHttpClient("PublikoAPI", c =>
             {
-                c.BaseAddress = new Uri(Configuration.GetValue<string>("PublikoAPIAddress"));
+                c.BaseAddress = new Uri(Configuration.GetSection("APIAddresses").GetSection("PublikoAPI").Value);
             });
 
             //START Added by me.
@@ -66,7 +78,7 @@ namespace PublikoWebApp
                 options.Password.RequiredUniqueChars = 1;
 
                 // Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.AllowedForNewUsers = true;
 
@@ -91,6 +103,7 @@ namespace PublikoWebApp
             //Own Services
             services.AddScoped<IStoredPagesService, StoredPagesService>();
             services.AddSingleton<IGlobalIDServices, GlobalIDServices>();
+            services.AddSingleton<ITokenManager, TokenManager>();
 
             services.AddRazorPages();
             services.AddRazorPages().AddRazorRuntimeCompilation();
@@ -120,11 +133,13 @@ namespace PublikoWebApp
                 app.UseHsts();
             }
 
+            app.UseRouting();
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
-            app.UseRouting();
+            //app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();

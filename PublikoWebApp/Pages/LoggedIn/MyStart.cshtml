@@ -1,9 +1,12 @@
 ﻿@page
 @inject Microsoft.Extensions.Configuration.IConfiguration Configuration;
+@inject PublikoWebApp.Services.ITokenManager _tokenManager;
+@inject UserManager<PublikoUser> _userManager;
 @model PublikoWebApp.Pages.LoggedIn.MyStartModel
 
 @{
     int newPageOrder = Model.Pages.Count + 1;
+    string token = $"Bearer {@_tokenManager.GenerateJwtToken(await _userManager.GetUserAsync(User))}";
 }
 
 
@@ -121,25 +124,28 @@
 
 <script type="text/javascript">
 
-    let PublikoAPIUrl = "@Configuration.GetSection("PublikoAPIAddress").Value";
+    let PublikoAPIUrl = "@Configuration.GetSection("APIAddresses").GetSection("PublikoAPI").Value";
 
     function DeletePage(id) {
 
         let response = confirm("Are you sure that you want to delete this Page?")
 
-        /*
-         * Function partially working. It needs to implement JWT Token
-         */
+        
         if (response) {
             console.log("Inside IF on DeletePage()")
             $.ajax({
-                method: "GET",
+                method: "DELETE",
                 url: PublikoAPIUrl + "/api/deletepage/" + id,
                 contentType: "application/json; charset=utf-8",
-                dataType: "jsonp",
+                dataType: "json",
+                headers: { Authorization: "@token" },
                 statusCode: {
                     200: function (data) {
                         console.log("success" + data.responseText);
+                        window.location.reload(true);
+                    },
+                    401: function (data) {
+                        console.log("FAIL CHECK CREDENTIALS" + data.responseText);
                         window.location.reload(true);
                     }
                 }
@@ -152,19 +158,22 @@
 
         let response = confirm("Are you sure that you want to delete this Post?")
 
-        /*
-         * Function partially working. It needs to implement JWT Token
-         */
+        
         if (response) {
             console.log("Inside IF on DeletePost()")
             $.ajax({
-                type: "GET",
+                type: "DELETE",
                 url: PublikoAPIUrl + "/api/deletepost/" + id,
                 contentType: "application/json; charset=utf-8",
-                dataType: "jsonp",
+                dataType: "json",
+                headers: { Authorization: "@token" },
                 statusCode: {
                     200: function (data) {
                         console.log("success" + data.responseText);
+                        window.location.reload(true);
+                    },
+                    401: function (data) {
+                        console.log("FAIL CHECK CREDENTIALS" + data.responseText);
                         window.location.reload(true);
                     }
                 }

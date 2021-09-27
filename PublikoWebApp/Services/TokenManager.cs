@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PublikoWebApp.Data;
 using System;
@@ -10,12 +11,23 @@ using System.Threading.Tasks;
 
 namespace PublikoWebApp.Services
 {
-    public static class TokenManager
+    public interface ITokenManager
     {
-        private const string SECRET_KEY = "kdhfjksdhfjk89347589ueroghdfjklgh8954tyu9845hginrtgol856y7";
-        public static readonly SymmetricSecurityKey SIGN_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
+        string GenerateJwtToken(PublikoUser user);
+    }
+    public class TokenManager : ITokenManager
+    {
+        const string SECRET_KEY = "kdhfjksdhfjk89347589ueroghdfjklgh8954tyu9845hginrtgol856y7";
+        readonly SymmetricSecurityKey SIGN_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
+        public IConfiguration _configuration { get; }
 
-        public static string GenerateJwtToken(PublikoUser user)
+        public TokenManager(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+
+        public string GenerateJwtToken(PublikoUser user)
         {
             var credentials = new SigningCredentials(SIGN_KEY, SecurityAlgorithms.HmacSha256);
             var header = new JwtHeader(credentials);
@@ -29,8 +41,8 @@ namespace PublikoWebApp.Services
                 { "name", user.UserName },
                 { "email", user.Email },
                 { "exp", ts },
-                { "iss", "https://localhost:5010" },
-                { "aud", "https://localhost:5000" }
+                { "iss", _configuration.GetSection("APIAddresses").GetSection("WebApp").Value },    //5010
+                { "aud", _configuration.GetSection("APIAddresses").GetSection("PublikoAPI").Value } //5000
             };
 
             var secToken = new JwtSecurityToken(header, payload);

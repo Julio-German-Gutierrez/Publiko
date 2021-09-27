@@ -33,6 +33,18 @@ namespace PublikoAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy("PublikoAPP", 
+                    builder =>
+                    {
+                        builder.WithOrigins("https://localhost:5010")
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials();;
+                    });
+            });
+
             services.AddSingleton<IGlobalIDServices, GlobalIDServices>();
             services.AddScoped<IPublikoAPIServices, PublikoAPIServices>();
 
@@ -51,10 +63,10 @@ namespace PublikoAPI
                 jwtOptions.TokenValidationParameters = new TokenValidationParameters()
                 {
                     IssuerSigningKey = SIGN_KEY,
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidIssuer = "https://localhost:5010/",
-                    ValidAudience = "https://localhost:5000",
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidIssuer = Configuration.GetSection("APIAddresses").GetSection("WebApp").Value,
+                    ValidAudience = Configuration.GetSection("APIAddresses").GetSection("PublikoAPI").Value,
                     ValidateLifetime = true
                 };
             });
@@ -75,10 +87,12 @@ namespace PublikoAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PublikoAPI v1"));
             }
+            app.UseCors("PublikoAPP");
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
 
             app.UseAuthentication();
             app.UseAuthorization();
