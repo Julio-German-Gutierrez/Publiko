@@ -137,7 +137,7 @@
             console.log("Inside IF on DeletePage()")
             $.ajax({
                 method: "DELETE",
-                url: PublikoAPIUrl + "/api/deletepage/" + id,
+                url: PublikoAPIUrl + "/api/pages/" + id,
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 headers: { Authorization: "@token" },
@@ -164,7 +164,7 @@
             console.log("Inside IF on DeletePost()")
             $.ajax({
                 type: "DELETE",
-                url: PublikoAPIUrl + "/api/deletepost/" + id,
+                url: PublikoAPIUrl + "/api/posts/" + id,
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 headers: { Authorization: "@token" },

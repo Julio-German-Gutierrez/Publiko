@@ -15,9 +15,9 @@ using Microsoft.AspNetCore.Cors;
 
 namespace PublikoAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class PagesController : ControllerBase
     {
         public ILogger _logger { get; }
@@ -43,7 +43,7 @@ namespace PublikoAPI.Controllers
 
 
         // OK!
-        [HttpGet("~/api/page/{pageID}")]
+        [HttpGet("{pageID}")]
         public async Task<ActionResult> GetPageByID(string pageID) //ContentResult
         {
             WebPage page = await _publikoAPIServices.GetPageByIdAsync(pageID);
@@ -57,18 +57,12 @@ namespace PublikoAPI.Controllers
 
 
         // OK!
-        [HttpGet("~/api/author/{authorID}/pages")]
-        public ActionResult GetPagesbyAuthor(string authorID) //ContentResult
+        [HttpGet]
+        public ActionResult GetPagesbyAuthor() //ContentResult
         {
             var userId = User.Claims.FirstOrDefault(c => c.Type.Equals("userId")).Value;
-            var userName = User.Claims.FirstOrDefault(c => c.Type.Equals("userName")).Value;
-            var userEmail = User.Claims.FirstOrDefault(c => c.Type.Equals("userEmail")).Value;
-            var userRole = User.Claims.FirstOrDefault(c => c.Type.Equals("userRole")).Value;
-            
-            //var dato = User.Claims.FirstOrDefault(c => c.Type == "email").Value;
 
-
-            List<WebPage> pages = _publikoAPIServices.GetPagesByAuthor(authorID);
+            List<WebPage> pages = _publikoAPIServices.GetPagesByAuthor(userId);
             if (pages.Count > 0)
                 return Ok(pages);
             else
@@ -78,7 +72,7 @@ namespace PublikoAPI.Controllers
 
 
         // OK!
-        [HttpPost("~/api/page/create")]
+        [HttpPost]
         public async Task<ActionResult> CreatePage(WebPageIncomming webPageIncomming)
         {
             if (ModelState.IsValid)
@@ -95,7 +89,7 @@ namespace PublikoAPI.Controllers
 
 
         // OK!
-        [HttpPut("~/api/editpage")]
+        [HttpPut]
         public async Task<ActionResult> EditPageAsync(WebPageEditIncomming editInc)
         {
             if (ModelState.IsValid)
@@ -111,10 +105,10 @@ namespace PublikoAPI.Controllers
 
 
 
-        [HttpDelete("~/api/deletepage/{id}")]
-        public async Task<ActionResult> DeletePageByID(string id = null)
+        [HttpDelete("{pageId}")]
+        public async Task<ActionResult> DeletePageByID(string pageId = null)
         {
-            string result = await _publikoAPIServices.DeletePageAsync(id);
+            string result = await _publikoAPIServices.DeletePageAsync(pageId);
 
             if (result.ToLower().Equals("ok"))
                 return Ok("Page Deleted");

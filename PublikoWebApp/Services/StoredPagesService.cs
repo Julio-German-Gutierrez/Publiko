@@ -53,7 +53,7 @@ namespace PublikoWebApp.Services
 
 
 
-        // OK!
+        // OK! >>>>>>>>>>>>>>>>>>>>>>>>>>>
         /// <summary>
         /// Get User Pages by ID 
         /// </summary>
@@ -63,7 +63,7 @@ namespace PublikoWebApp.Services
         {
             var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
 
-            string resource = $"api/author/{userObject.Id}/pages";
+            string resource = $"api/pages";
 
             var request = new HttpRequestMessage(HttpMethod.Get, resource);
 
@@ -85,7 +85,7 @@ namespace PublikoWebApp.Services
         {
             var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
 
-            string resource = $"api/author/{userObject.Id}/posts";
+            string resource = $"api/posts";
 
             var request = new HttpRequestMessage(HttpMethod.Get, resource);
             request.Headers.Add("Authorization", "Bearer " + await _tokenManager.GenerateJwtToken(userObject));
@@ -105,7 +105,7 @@ namespace PublikoWebApp.Services
             var userObject = await _userManager.FindByIdAsync(newPage.UserID);
 
             var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
-            string resource = $"api/page/create";
+            string resource = $"api/pages";
 
             var newPageInc = ConvertToWebPageIncomming(newPage);
 
@@ -130,7 +130,7 @@ namespace PublikoWebApp.Services
             var userObject = await _userManager.FindByIdAsync(newPost.UserID);
 
             var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
-            string resource = $"api/post/create";
+            string resource = $"api/posts";
 
             var newPostInc = ConvertToWebPostIncomming(newPost);
 
@@ -152,7 +152,7 @@ namespace PublikoWebApp.Services
         public async Task<WebPage> GetPageByIDAsync(string pageId, PublikoUser userObject)
         {
             var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
-            string resource = $"api/page/{pageId}";
+            string resource = $"api/pages/{pageId}";
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, resource);
             request.Headers.Add("Authorization", "Bearer " + await _tokenManager.GenerateJwtToken(userObject));
@@ -179,7 +179,7 @@ namespace PublikoWebApp.Services
             var userObject = await _userManager.FindByIdAsync(webPage.UserID);
 
             var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
-            string source = $"api/editpage";
+            string source = $"api/pages";
 
             var webPageEdit = ConvertToWebPageEditIncomming(webPage);
 
@@ -205,7 +205,7 @@ namespace PublikoWebApp.Services
         public async Task<WebPost> GetPostByIDAsync(string postId, PublikoUser userObject)
         {
             var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
-            string resource = $"api/post/{postId}";
+            string resource = $"api/posts/{postId}";
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, resource);
             request.Headers.Add("Authorization", "Bearer " + await _tokenManager.GenerateJwtToken(userObject));
@@ -229,7 +229,7 @@ namespace PublikoWebApp.Services
         public async Task<string> EditPostAsync(WebPost webPost, PublikoUser userObject)
         {
             var _httpClient = _httpClientFactory.CreateClient("PublikoAPI");
-            string resource = $"api/editpost";
+            string resource = $"api/posts";
 
             var editPost = ConvertToWebPostEditIncomming(webPost);
 
