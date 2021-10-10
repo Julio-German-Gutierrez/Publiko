@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,44 +14,46 @@ namespace PublikoWebApp.Services
 {
     public interface ITokenManager
     {
-        string GenerateJwtToken(PublikoUser user);
+        Task<string> GenerateJwtToken(PublikoUser user);
     }
     public class TokenManager : ITokenManager
     {
         const string SECRET_KEY = "kdhfjksdhfjk89347589ueroghdfjklgh8954tyu9845hginrtgol856y7";
         readonly SymmetricSecurityKey SIGN_KEY = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SECRET_KEY));
         public IConfiguration _configuration { get; }
+        public UserManager<PublikoUser> _userManager { get; }
+        public RoleManager<PublikoUser> _roleManager { get; }
 
-        public TokenManager(IConfiguration configuration)
+        public TokenManager(IConfiguration configuration,
+                            UserManager<PublikoUser> userManager)
         {
             _configuration = configuration;
+            _userManager = userManager;
         }
 
 
-        public string GenerateJwtToken(PublikoUser user)
+        public async Task<string> GenerateJwtToken(PublikoUser user)
         {
-            var credentials = new SigningCredentials(SIGN_KEY, SecurityAlgorithms.HmacSha256);
-            var header = new JwtHeader(credentials);
+            var tokenHandler = new JwtSecurityTokenHandler();
 
-            DateTime Expire = DateTime.UtcNow.AddMinutes(1);
-            int ts = (int)(Expire - new DateTime(1970, 1, 1)).TotalSeconds;
-
-            var payload = new JwtPayload()
+            var tokenDescriptor = new SecurityTokenDescriptor
             {
-                { "id", user.Id },
-                { "name", user.UserName },
-                { "email", user.Email },
-                { "exp", ts },
-                { "iss", _configuration.GetSection("APIAddresses").GetSection("WebApp").Value },    //5010
-                { "aud", _configuration.GetSection("APIAddresses").GetSection("PublikoAPI").Value } //5000
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim("userId", user.Id),
+                    new Claim("userName", user.UserName),
+                    new Claim("userEmail", user.Email),
+                    new Claim("userRole", (await _userManager.GetRolesAsync(user))[0]) //Chequear esto
+                }),
+                Expires = DateTime.UtcNow.AddSeconds(30),
+                SigningCredentials = new SigningCredentials(SIGN_KEY, SecurityAlgorithms.HmacSha256Signature),
+                Issuer = _configuration["APIAddresses:WebApp"],
+                Audience = _configuration["APIAddresses:PublikoAPI"]
             };
 
-            var secToken = new JwtSecurityToken(header, payload);
-            var handler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            var tokenString = handler.WriteToken(secToken);
-
-            return tokenString;
+            return tokenHandler.WriteToken(token);
         }
     }
 }

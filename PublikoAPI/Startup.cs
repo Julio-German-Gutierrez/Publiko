@@ -65,8 +65,8 @@ namespace PublikoAPI
                     IssuerSigningKey = SIGN_KEY,
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidIssuer = Configuration.GetSection("APIAddresses").GetSection("WebApp").Value,
-                    ValidAudience = Configuration.GetSection("APIAddresses").GetSection("PublikoAPI").Value,
+                    ValidIssuer = Configuration["APIAddresses:WebApp"],
+                    ValidAudience = Configuration["APIAddresses:PublikoAPI"],
                     ValidateLifetime = true
                 };
             });

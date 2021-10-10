@@ -30,6 +30,11 @@ namespace PublikoWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Own Services
+            services.AddScoped<IStoredPagesService, StoredPagesService>();
+            services.AddScoped<IGlobalIDServices, GlobalIDServices>();
+            services.AddScoped<ITokenManager, TokenManager>();
+            
             //GDPR
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -87,10 +92,6 @@ namespace PublikoWebApp
             });
             //END Added by me.
 
-            //Own Services
-            services.AddScoped<IStoredPagesService, StoredPagesService>();
-            services.AddSingleton<IGlobalIDServices, GlobalIDServices>();
-            services.AddSingleton<ITokenManager, TokenManager>();
 
             services.AddRazorPages();
             services.AddRazorPages().AddRazorRuntimeCompilation();

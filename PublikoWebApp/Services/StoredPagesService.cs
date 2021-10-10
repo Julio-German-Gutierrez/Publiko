@@ -34,16 +34,19 @@ namespace PublikoWebApp.Services
     {
         IHttpClientFactory _httpClientFactory { get; }
         public UserManager<PublikoUser> _userManager { get; }
+        public RoleManager<IdentityRole> _roleManager { get; }
         public ILogger<StoredPagesService> _logger { get; }
         public ITokenManager _tokenManager { get; }
 
         public StoredPagesService(IHttpClientFactory httpClientFactory,
                                   UserManager<PublikoUser> userManager,
+                                  RoleManager<IdentityRole> roleManager,
                                   ILogger<StoredPagesService> logger,
                                   ITokenManager tokenManager)
         {
             _httpClientFactory = httpClientFactory;
             _userManager = userManager;
+            _roleManager = roleManager;
             _logger = logger;
             _tokenManager = tokenManager;
         }
@@ -64,7 +67,7 @@ namespace PublikoWebApp.Services
 
             var request = new HttpRequestMessage(HttpMethod.Get, resource);
 
-            var token = _tokenManager.GenerateJwtToken(userObject);
+            var token = await _tokenManager.GenerateJwtToken(userObject);
 
             request.Headers.Add("Authorization", "Bearer " + token);
             var response = await _httpClient.SendAsync(request);
@@ -85,7 +88,7 @@ namespace PublikoWebApp.Services
             string resource = $"api/author/{userObject.Id}/posts";
 
             var request = new HttpRequestMessage(HttpMethod.Get, resource);
-            request.Headers.Add("Authorization", "Bearer " + _tokenManager.GenerateJwtToken(userObject));
+            request.Headers.Add("Authorization", "Bearer " + await _tokenManager.GenerateJwtToken(userObject));
             var response = await _httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
@@ -107,7 +110,7 @@ namespace PublikoWebApp.Services
             var newPageInc = ConvertToWebPageIncomming(newPage);
 
             var request = new HttpRequestMessage(HttpMethod.Post, resource);
-            request.Headers.Add("Authorization", "Bearer " + _tokenManager.GenerateJwtToken(userObject));
+            request.Headers.Add("Authorization", "Bearer " + await _tokenManager.GenerateJwtToken(userObject));
             string newPageJson = JsonSerializer.Serialize(newPageInc);
             request.Content = new StringContent(newPageJson, Encoding.UTF8, MediaTypeNames.Application.Json);
 
@@ -132,7 +135,7 @@ namespace PublikoWebApp.Services
             var newPostInc = ConvertToWebPostIncomming(newPost);
 
             var request = new HttpRequestMessage(HttpMethod.Post, resource);
-            request.Headers.Add("Authorization", "Bearer " + _tokenManager.GenerateJwtToken(userObject));
+            request.Headers.Add("Authorization", "Bearer " + await _tokenManager.GenerateJwtToken(userObject));
             string newPostJson = JsonSerializer.Serialize(newPostInc);
             request.Content = new StringContent(newPostJson, Encoding.UTF8, MediaTypeNames.Application.Json);
 
@@ -152,7 +155,7 @@ namespace PublikoWebApp.Services
             string resource = $"api/page/{pageId}";
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, resource);
-            request.Headers.Add("Authorization", "Bearer " + _tokenManager.GenerateJwtToken(userObject));
+            request.Headers.Add("Authorization", "Bearer " + await _tokenManager.GenerateJwtToken(userObject));
             var response = await _httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
@@ -181,7 +184,7 @@ namespace PublikoWebApp.Services
             var webPageEdit = ConvertToWebPageEditIncomming(webPage);
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, source);
-            request.Headers.Add("Authorization", "Bearer " + _tokenManager.GenerateJwtToken(userObject));
+            request.Headers.Add("Authorization", "Bearer " + await _tokenManager.GenerateJwtToken(userObject));
             var webPageJson = JsonSerializer.Serialize(webPageEdit, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             request.Content = new StringContent(webPageJson, Encoding.UTF8, MediaTypeNames.Application.Json);
             var response = await _httpClient.SendAsync(request);
@@ -205,7 +208,7 @@ namespace PublikoWebApp.Services
             string resource = $"api/post/{postId}";
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, resource);
-            request.Headers.Add("Authorization", "Bearer " + _tokenManager.GenerateJwtToken(userObject));
+            request.Headers.Add("Authorization", "Bearer " + await _tokenManager.GenerateJwtToken(userObject));
             var response = await _httpClient.SendAsync(request);
 
             if (response.IsSuccessStatusCode)
@@ -231,7 +234,7 @@ namespace PublikoWebApp.Services
             var editPost = ConvertToWebPostEditIncomming(webPost);
 
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Put, resource);
-            request.Headers.Add("Authorization", "Bearer " + _tokenManager.GenerateJwtToken(userObject));
+            request.Headers.Add("Authorization", "Bearer " + await _tokenManager.GenerateJwtToken(userObject));
             var editPostJson = JsonSerializer.Serialize(editPost, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
             request.Content = new StringContent(editPostJson, Encoding.UTF8, MediaTypeNames.Application.Json);
 

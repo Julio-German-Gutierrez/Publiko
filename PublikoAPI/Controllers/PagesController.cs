@@ -47,7 +47,7 @@ namespace PublikoAPI.Controllers
         public async Task<ActionResult> GetPageByID(string pageID) //ContentResult
         {
             WebPage page = await _publikoAPIServices.GetPageByIdAsync(pageID);
-
+            
             if (page != null)
                 return Ok(page);
             else
@@ -57,43 +57,23 @@ namespace PublikoAPI.Controllers
 
 
         // OK!
-        [HttpGet("~/api/post/{postID}")]
-        public async Task<ActionResult> GetPostByID(string postID) //ContentResult
-        {
-            WebPost post = await _publikoAPIServices.GetPostByIdAsync(postID);
-
-            if (post != null)
-                return Ok(post);
-            else
-                return BadRequest("Web post that not exist or there is a problem with the server.");
-        }
-
-
-
-        // OK!
         [HttpGet("~/api/author/{authorID}/pages")]
         public ActionResult GetPagesbyAuthor(string authorID) //ContentResult
         {
+            var userId = User.Claims.FirstOrDefault(c => c.Type.Equals("userId")).Value;
+            var userName = User.Claims.FirstOrDefault(c => c.Type.Equals("userName")).Value;
+            var userEmail = User.Claims.FirstOrDefault(c => c.Type.Equals("userEmail")).Value;
+            var userRole = User.Claims.FirstOrDefault(c => c.Type.Equals("userRole")).Value;
+            
+            //var dato = User.Claims.FirstOrDefault(c => c.Type == "email").Value;
+
+
             List<WebPage> pages = _publikoAPIServices.GetPagesByAuthor(authorID);
             if (pages.Count > 0)
                 return Ok(pages);
             else
                 return BadRequest("There was an error processing your request.");
         }
-
-
-
-        // OK!
-        [HttpGet("~/api/author/{authorID}/posts")]
-        public ActionResult GetPostsbyAuthor(string authorID) //ContentResult
-        {
-            List<WebPost> posts = _publikoAPIServices.GetPostsByAuthor(authorID);
-            if (posts.Count > 0)
-                return Ok(posts);
-            else
-                return BadRequest("There was an error processing your request.");
-        }
-
 
 
 
@@ -109,23 +89,6 @@ namespace PublikoAPI.Controllers
                     return Ok("Page Created");
             }
             
-            return BadRequest();
-        }
-
-
-
-        // OK!
-        [HttpPost("~/api/post/create")]
-        public async Task<ActionResult> CreatePost(WebPostIncomming webPostIncomming) // user id: 605ad860-4a7c-4a63-821e-09f0af97476e
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _publikoAPIServices.CreatePost(webPostIncomming);
-
-                if (result.ToLower().Equals("ok"))
-                    return Ok("Post Created");
-            }
-
             return BadRequest();
         }
 
@@ -148,23 +111,6 @@ namespace PublikoAPI.Controllers
 
 
 
-        // OK!
-        [HttpPut("~/api/editpost")]
-        public async Task<ActionResult> EditPostAsync(WebPostEditIncomming editInc)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await _publikoAPIServices.EditPostAsync(editInc);
-
-                if (result.ToLower().Equals("ok"))
-                    return Ok("Post Updated");
-            }
-
-            return BadRequest();
-        }
-
-
-
         [HttpDelete("~/api/deletepage/{id}")]
         public async Task<ActionResult> DeletePageByID(string id = null)
         {
@@ -172,19 +118,6 @@ namespace PublikoAPI.Controllers
 
             if (result.ToLower().Equals("ok"))
                 return Ok("Page Deleted");
-            else
-                return NotFound();
-        }
-
-
-
-        [HttpDelete("~/api/deletepost/{id}")]
-        public async Task<ActionResult> DeletePostByID(string id = null)
-        {
-            string result = await _publikoAPIServices.DeletePostAsync(id);
-
-            if (result.ToLower().Equals("ok"))
-                return Ok("Post Deleted");
             else
                 return NotFound();
         }
