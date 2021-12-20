@@ -16,15 +16,7 @@
 <div style="background-color: cornflowerblue">
     <img hidden src="/assets/img/banner.jpg" alt="Banner-image" />
     <div class="container p-0 overflow-hidden" style="height:200px;position:relative">
-        <img class="img-fluid" src="/assets/img/banner.jpg" width="100%" alt="Banner-image" />
-
-        <!---->
-        <div class="">
-            <a href="#" style="position:absolute;bottom:10px;right:10px;color:white">[+]</a>
-            @*<input type="file" id="myBanner" name="NOMBRE" value="NAME" />*@
-        </div>
-
-
+        <img id="bannerImage" style="background-image: url('/assets/img/banner.jpg'); width: 1140px; height: 800px; background-position-y: 0px" />
     </div>
 </div>
 
@@ -128,57 +120,46 @@
 <script type="text/javascript">
 
     let PublikoAPIUrl = "@Configuration["APIAddresses:PublikoAPI"]";
+    let banner = document.getElementById("bannerImage");
 
-    function DeletePage(id) {
+    async function DeletePage(id) {
 
         let response = confirm("Are you sure that you want to delete this Page?")
-        
+
         if (response) {
-            console.log("Inside IF on DeletePage()")
-            $.ajax({
+            let response = await fetch(PublikoAPIUrl + "/api/pages/" + id, {
                 method: "DELETE",
-                url: PublikoAPIUrl + "/api/pages/" + id,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                headers: { Authorization: "@token" },
-                statusCode: {
-                    200: function (data) {
-                        console.log("success" + data.responseText);
-                        window.location.reload(true);
-                    },
-                    401: function (data) {
-                        console.log("FAIL CHECK CREDENTIALS" + data.responseText);
-                        window.location.reload(true);
-                    }
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8",
+                    "Authorization": "@token"
                 }
             });
+
+            if (response.ok) {
+                console.log("RESPONSE: " + response.statusText);
+                window.location.reload(true);
+            }
         }
     }
 
 
-    function DeletePost(id) {
+    async function DeletePost(id) {
 
         let response = confirm("Are you sure that you want to delete this Post?")
-        
+
         if (response) {
-            console.log("Inside IF on DeletePost()")
-            $.ajax({
-                type: "DELETE",
-                url: PublikoAPIUrl + "/api/posts/" + id,
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                headers: { Authorization: "@token" },
-                statusCode: {
-                    200: function (data) {
-                        console.log("success" + data.responseText);
-                        window.location.reload(true);
-                    },
-                    401: function (data) {
-                        console.log("FAIL CHECK CREDENTIALS" + data.responseText);
-                        window.location.reload(true);
-                    }
+            let response = await fetch(PublikoAPIUrl + "/api/posts/" + id, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json;charset=utf-8",
+                    "Authorization": "@token"
                 }
             });
+
+            if (response.ok) {
+                console.log("RESPONSE: " + response.statusText);
+                window.location.reload(true);
+            }
         }
     }
 
@@ -192,6 +173,13 @@
             } else {
                 divElements[i].hidden = true;
             }
+        }
+    }
+
+    class credentials {
+        constructor(user, pass) {
+            this.userName = user;
+            this.password = pass;
         }
     }
 
