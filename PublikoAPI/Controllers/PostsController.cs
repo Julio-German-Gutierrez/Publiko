@@ -15,9 +15,9 @@ using Microsoft.AspNetCore.Cors;
 
 namespace PublikoAPI.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class PostsController : ControllerBase
     {
         public ILogger _logger { get; }
@@ -43,7 +43,7 @@ namespace PublikoAPI.Controllers
 
 
         // OK!
-        [HttpGet("~/api/post/{postID}")]
+        [HttpGet("{postID}")]
         public async Task<ActionResult> GetPostByID(string postID) //ContentResult
         {
             WebPost post = await _publikoAPIServices.GetPostByIdAsync(postID);
@@ -57,10 +57,12 @@ namespace PublikoAPI.Controllers
 
 
         // OK!
-        [HttpGet("~/api/author/{authorID}/posts")]
-        public ActionResult GetPostsbyAuthor(string authorID) //ContentResult
+        [HttpGet]
+        public ActionResult GetPostsbyAuthor() //ContentResult
         {
-            List<WebPost> posts = _publikoAPIServices.GetPostsByAuthor(authorID);
+            var userId = User.Claims.FirstOrDefault(c => c.Type.Equals("userId")).Value;
+
+            List<WebPost> posts = _publikoAPIServices.GetPostsByAuthor(userId);
             if (posts.Count > 0)
                 return Ok(posts);
             else
@@ -71,7 +73,7 @@ namespace PublikoAPI.Controllers
 
 
         // OK!
-        [HttpPost("~/api/post/create")]
+        [HttpPost]
         public async Task<ActionResult> CreatePost(WebPostIncomming webPostIncomming) // user id: 605ad860-4a7c-4a63-821e-09f0af97476e
         {
             if (ModelState.IsValid)
@@ -88,7 +90,7 @@ namespace PublikoAPI.Controllers
 
 
         // OK!
-        [HttpPut("~/api/editpost")]
+        [HttpPut]
         public async Task<ActionResult> EditPostAsync(WebPostEditIncomming editInc)
         {
             if (ModelState.IsValid)
@@ -104,10 +106,10 @@ namespace PublikoAPI.Controllers
 
 
 
-        [HttpDelete("~/api/deletepost/{id}")]
-        public async Task<ActionResult> DeletePostByID(string id = null)
+        [HttpDelete("{postId}")]
+        public async Task<ActionResult> DeletePostByID(string postId = null)
         {
-            string result = await _publikoAPIServices.DeletePostAsync(id);
+            string result = await _publikoAPIServices.DeletePostAsync(postId);
 
             if (result.ToLower().Equals("ok"))
                 return Ok("Post Deleted");

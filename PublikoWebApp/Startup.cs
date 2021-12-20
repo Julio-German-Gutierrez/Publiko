@@ -30,6 +30,20 @@ namespace PublikoWebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Add CORS
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowPublikoAPI",
+                    builder =>
+                    {
+                        //builder.WithOrigins("https://localhost:5000/");
+                        builder.AllowAnyOrigin();
+                        builder.AllowAnyMethod();
+                        builder.AllowAnyHeader();
+                        //builder.AllowCredentials();
+                    });
+            });
+
             //Own Services
             services.AddScoped<IStoredPagesService, StoredPagesService>();
             services.AddScoped<IGlobalIDServices, GlobalIDServices>();
@@ -126,6 +140,8 @@ namespace PublikoWebApp
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseRouting();
+
+            app.UseCors("AllowPublikoAPI");
 
             app.UseAuthentication();
             app.UseAuthorization();

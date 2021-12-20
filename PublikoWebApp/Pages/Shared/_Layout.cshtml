@@ -41,23 +41,28 @@
     <!-- Navigation-->
     <nav class="navbar navbar-expand-sm navbar-dark" style="background-color:coral"> <!-- class="fixed-top" -->
         <div class="container">
-            @if (SignInManager.IsSignedIn(User))
+            @if (SignInManager.IsSignedIn(User) && User.IsInRole("User"))
             {
                 <a asp-page="/LoggedIn/MyStart" class="navbar-brand text-white">My Publiko</a>
             }
+            else if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+            {
+                <a asp-page="/Admin/IndexAdmin" class="navbar-brand text-white">My Publiko</a>
+            }
             else
             {
-                <a class="navbar-brand text-white">Welcome to Publiko</a>
+                <a asp-page="/Index" class="navbar-brand text-white">Welcome to Publiko</a>
             }
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
 
             @*<ul class="navbar-nav ml-auto">
-                <partial name="_LoginPartial" />
-            </ul>*@
+            <partial name="_LoginPartial" />
+        </ul>*@
 
             <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ml-auto"> <!-- ml-auto -->
+                <ul class="navbar-nav ml-auto">
+                    <!-- ml-auto -->
                     <partial name="_LoginPartial" />
                 </ul>
             </div>

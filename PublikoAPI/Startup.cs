@@ -35,13 +35,14 @@ namespace PublikoAPI
         {
             services.AddCors(options =>
             {
-                options.AddPolicy("PublikoWebApp", 
+                options.AddPolicy("PublikoWebApp",
                     builder =>
                     {
-                        builder.WithOrigins(Configuration.GetSection("APIAddresses").GetSection("WebApp").Value)
-                            .AllowAnyHeader()
-                            .AllowAnyMethod()
-                            .AllowCredentials();;
+                        //builder.WithOrigins(@"https://localhost:5010/");
+                        builder.AllowAnyOrigin();
+                        builder.AllowAnyMethod();
+                        builder.AllowAnyHeader();
+                        //builder.AllowCredentials();
                     });
             });
 
@@ -88,8 +89,8 @@ namespace PublikoAPI
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PublikoAPI v1"));
             }
 
-            app.UseHttpsRedirection();
 
+            app.UseHttpsRedirection();
             app.UseRouting();
 
             app.UseCors("PublikoWebApp");
